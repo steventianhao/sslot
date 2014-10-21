@@ -65,19 +65,6 @@ func TestGameBuilder(t *testing.T) {
 
 }
 
-func TestMatrix2List(t *testing.T) {
-	matrix := [][]*symbol{
-		[]*symbol{Ns(0, "Nine"), Ns(1, "Ten"), Ns(2, "Jack")},
-		[]*symbol{Ns(3, "Queen"), Ns(4, "King"), Ns(5, "Ace"), Ns(6, "Clam"), Ns(7, "Starfish")},
-	}
-	l := Matrix2List(matrix)
-	for i, v := range []*symbol{Ns(0, "Nine"), Ns(1, "Ten"), Ns(2, "Jack"), Ns(3, "Queen"), Ns(4, "King"), Ns(5, "Ace"), Ns(6, "Clam"), Ns(7, "Starfish")} {
-		if *l[i] != *v {
-			t.Error("Matrix2List is not right")
-		}
-	}
-}
-
 func expect(t *testing.T, a *Win, b *Win) {
 	if b == nil && a == nil {
 		return

@@ -3,6 +3,8 @@ package sslot
 import (
 	"errors"
 	"fmt"
+	"math/rand"
+	"time"
 )
 
 type Reel []*symbol
@@ -30,14 +32,6 @@ func (g *GameBuilder) SetSymbols(symbols []*symbol) *GameBuilder {
 	}
 	g.symbols = m
 	return g
-}
-
-func (g GameBuilder) lengthOfReels() []int {
-	r := make([]int, len(g.reels))
-	for i, v := range g.reels {
-		r[i] = len(v)
-	}
-	return r
 }
 
 func (g GameBuilder) str2symbol(str string) (*symbol, error) {
@@ -70,58 +64,40 @@ func (g *GameBuilder) SetReels(reels ...[]string) (*GameBuilder, error) {
 	return g, nil
 }
 
-func (g GameBuilder) screenshot(matrix [][]int) [][]*symbol {
-	r := make([][]*symbol, len(matrix))
-	for i, rows := range matrix {
-		r[i] = symbolSlice(g.reels[i], rows)
-	}
-	return r
-}
-
-func symbolSlice(symbols []*symbol, idx []int) []*symbol {
-	r := make([]*symbol, len(idx))
-	for i, v := range idx {
-		r[i] = symbols[v]
-	}
-	return r
-}
-
 func (g *GameBuilder) build() Game {
 	return g
 }
 
 func (g GameBuilder) MainSpin() [][]*symbol {
-	limits := g.lengthOfReels()
-	matrix := RandomSeqs(limits, g.nRows)
-	return g.screenshot(matrix)
-}
-
-func Matrix2List(matrix [][]*symbol) []*symbol {
-	var r []*symbol
-	for _, rows := range matrix {
-		r = append(r, rows...)
+	random := rand.New(rand.NewSource(time.Now().UnixNano()))
+	fOneReel := func(symbols []*symbol, nRows int) []*symbol {
+		l := len(symbols)
+		idx := random.Intn(l)
+		r := make([]*symbol, nRows)
+		for i := 0; i < nRows; i++ {
+			r[i] = symbols[(idx+i)%l]
+		}
+		return r
 	}
-	return r
+	result := make([][]*symbol, len(g.reels))
+	for i, reel := range g.reels {
+		cs := fOneReel(reel, g.nRows)
+		result[i] = cs
+	}
+	return result
 }
 
 func hotLines(screenshot [][]*symbol, lines [][]int) [][]*symbol {
-	ss := Matrix2List(screenshot)
+	oneLine := func(line []int) []*symbol {
+		r := make([]*symbol, len(line))
+		for i, idx := range line {
+			r[i] = screenshot[i][idx]
+		}
+		return r
+	}
 	r := make([][]*symbol, len(lines))
 	for i, line := range lines {
-		r[i] = oneLine(ss, line)
-	}
-	return r
-}
-
-func oneLine(symbols []*symbol, line []int) []*symbol {
-	r := make([]*symbol, len(line))
-	for i, idx := range line {
-		for j, v := range symbols {
-			if j == idx {
-				r[i] = v
-				break
-			}
-		}
+		r[i] = oneLine(line)
 	}
 	return r
 }
