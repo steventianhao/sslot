@@ -86,9 +86,9 @@ func wildHits() map[HitKey]*Hit {
 
 func scatterHits() map[HitKey]*Hit {
 	hits := []*Hit{
-		NewHit("Mermaid", 5, 100),
-		NewHit("Mermaid", 4, 10),
-		NewHit("Mermaid", 3, 5),
+		NewFeatureHit("Mermaid", 5, 100, 15, 3),
+		NewFeatureHit("Mermaid", 4, 10, 15, 3),
+		NewFeatureHit("Mermaid", 3, 5, 15, 3),
 	}
 	return makeHitMap(hits)
 }
@@ -124,25 +124,5 @@ func FeatureGameReelStrips() [][]string {
 }
 
 func lines() [][]int {
-	return [][]int{
-		[]int{1, 1, 1, 1, 1},
-		[]int{0, 0, 0, 0, 0},
-		[]int{2, 2, 2, 2, 2},
-
-		[]int{0, 1, 2, 1, 0},
-		[]int{2, 1, 0, 1, 2},
-
-		[]int{0, 0, 1, 0, 0},
-		[]int{2, 2, 1, 2, 2},
-
-		[]int{1, 2, 2, 2, 1},
-		[]int{1, 0, 0, 0, 1},
-		[]int{1, 0, 1, 0, 1},
-
-		[]int{1, 2, 1, 2, 1},
-		[]int{0, 1, 0, 1, 0},
-		[]int{2, 1, 2, 1, 2},
-		[]int{1, 1, 0, 1, 1},
-		[]int{1, 1, 2, 1, 1},
-	}
+	return lines3x5[:][:]
 }

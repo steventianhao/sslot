@@ -51,6 +51,22 @@ func (s symbol) isScatter() bool {
 	return s.kind == Scatter
 }
 
+func Symbols2Map(symbols []*symbol) map[string]*symbol {
+	m := make(map[string]*symbol)
+	for _, s := range symbols {
+		m[s.name] = s
+	}
+	return m
+}
+
+func Strings2Symbols(symbolsMap map[string]*symbol, symbolNames []string) []*symbol {
+	result := make([]*symbol, len(symbolNames))
+	for i, n := range symbolNames {
+		result[i] = symbolsMap[n]
+	}
+	return result
+}
+
 type engine struct {
 	rows  int
 	reels [][]*symbol

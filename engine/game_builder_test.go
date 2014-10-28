@@ -65,15 +65,6 @@ func TestGameBuilder(t *testing.T) {
 
 }
 
-func expect(t *testing.T, a *Win, b *Win) {
-	if b == nil && a == nil {
-		return
-	} else if *(a.Symbol) != *(b.Symbol) && a.Counts != b.Counts && a.Substitute != b.Substitute {
-		es := fmt.Sprint(*a, " should equal to ", *b)
-		t.Error(es)
-	}
-}
-
 func TestCalcWin(t *testing.T) {
 	ss := []*symbol{Ns(0, "Nine"), Ns(1, "Ten"), Ns(2, "Jack"), Ns(3, "Queen"), Ns(4, "King")}
 	w1 := calcNormalWins(ss)

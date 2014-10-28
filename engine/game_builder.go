@@ -87,14 +87,11 @@ func (g GameBuilder) MainSpin() [][]*symbol {
 	return result
 }
 
-type HitKey struct {
-	symbol string
-	counts int
-}
-
 type Hit struct {
 	HitKey
-	ratio int
+	ratio      int
+	features   int
+	multiplier int
 }
 
 type HitResult struct {
@@ -103,11 +100,15 @@ type HitResult struct {
 }
 
 func NewHit(symbol string, counts int, ratio int) *Hit {
-	return &Hit{HitKey{symbol, counts}, ratio}
+	return &Hit{HitKey{symbol, counts}, ratio, 0, 0}
+}
+
+func NewFeatureHit(symbol string, counts, ratio, features, multiplier int) *Hit {
+	return &Hit{HitKey{symbol, counts}, ratio, features, multiplier}
 }
 
 func (nH Hit) key() HitKey {
-	return HitKey{nH.symbol, nH.counts}
+	return nH.HitKey
 }
 
 func caclHitResult(win *Win, hits map[HitKey]*Hit) *HitResult {
