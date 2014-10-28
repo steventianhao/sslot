@@ -1,7 +1,6 @@
 package game
 
 import (
-	//"fmt"
 	"github.com/landjur/go-decimal"
 )
 
@@ -14,12 +13,6 @@ func ShowGame(name string) bool {
 		}
 	}
 	return false
-}
-
-type Dec decimal.Decimal
-
-func (self Dec) MarshalJSON() ([]byte, error) {
-	return []byte(decimal.Decimal(self).String()), nil
 }
 
 func SpinGame(name string, lines int, bet *decimal.Decimal) (*Result, error) {
