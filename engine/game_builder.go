@@ -3,11 +3,8 @@ package engine
 import (
 	"errors"
 	"fmt"
-	"math/rand"
-	"time"
 )
 
-type Reel []*symbol
 type Line []int
 
 type GameBuilder struct {
@@ -15,10 +12,6 @@ type GameBuilder struct {
 	symbols              map[string]*symbol
 	reels                []Reel
 	lines                []Line
-}
-
-type Game interface {
-	MainSpin() [][]*symbol
 }
 
 func NewGameBuilder(rows, columns, lines int) *GameBuilder {
@@ -64,27 +57,8 @@ func (g *GameBuilder) SetReels(reels ...[]string) (*GameBuilder, error) {
 	return g, nil
 }
 
-func (g *GameBuilder) build() Game {
-	return g
-}
-
-func (g GameBuilder) MainSpin() [][]*symbol {
-	random := rand.New(rand.NewSource(time.Now().UnixNano()))
-	fOneReel := func(symbols []*symbol, nRows int) []*symbol {
-		l := len(symbols)
-		idx := random.Intn(l)
-		r := make([]*symbol, nRows)
-		for i := 0; i < nRows; i++ {
-			r[i] = symbols[(idx+i)%l]
-		}
-		return r
-	}
-	result := make([][]*symbol, len(g.reels))
-	for i, reel := range g.reels {
-		cs := fOneReel(reel, g.nRows)
-		result[i] = cs
-	}
-	return result
+func (g *GameBuilder) build() *engine {
+	return NewEngine(g.nRows, g.reels...)
 }
 
 type Hit struct {

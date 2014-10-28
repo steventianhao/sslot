@@ -52,7 +52,7 @@ func TestGameBuilder(t *testing.T) {
 		t.Error(err)
 	}
 
-	screenshot := g2.build().MainSpin()
+	screenshot := g2.build().Spin()
 	fmt.Println("scrrenshot:", screenshot)
 
 	symbolLines := SymbolOnLines(screenshot, lines())

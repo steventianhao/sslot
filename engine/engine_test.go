@@ -6,7 +6,7 @@ import (
 )
 
 func TestSpin1x1(t *testing.T) {
-	engine := NewEngine(1, []*symbol{Ns(7, "Starfish"), Ns(10, "Octopus"), Ws(12, "Shark")})
+	engine := NewEngine(1, Reel{Ns(7, "Starfish"), Ns(10, "Octopus"), Ws(12, "Shark")})
 	result := engine.Spin()
 	if len(result) != 1 {
 		t.Error("1 reel so just give one")
@@ -19,7 +19,7 @@ func TestSpin1x1(t *testing.T) {
 }
 
 func TestSpin2x1(t *testing.T) {
-	engine := NewEngine(2, []*symbol{Ns(7, "Starfish"), Ns(10, "Octopus"), Ws(12, "Shark")})
+	engine := NewEngine(2, Reel{Ns(7, "Starfish"), Ns(10, "Octopus"), Ws(12, "Shark")})
 	result := engine.Spin()
 	if len(result) != 1 {
 		t.Error("1 reel so just give one")
@@ -33,9 +33,9 @@ func TestSpin2x1(t *testing.T) {
 
 func TestSpin1x3(t *testing.T) {
 	engine := NewEngine(1,
-		[]*symbol{Ns(7, "Starfish"), Ns(10, "Octopus"), Ws(12, "Shark")},
-		[]*symbol{Ns(7, "Starfish"), Ns(10, "Octopus"), Ws(12, "Shark")},
-		[]*symbol{Ns(10, "Octopus"), Ss(11, "Mermaid"), Ws(12, "Shark")})
+		Reel{Ns(7, "Starfish"), Ns(10, "Octopus"), Ws(12, "Shark")},
+		Reel{Ns(7, "Starfish"), Ns(10, "Octopus"), Ws(12, "Shark")},
+		Reel{Ns(10, "Octopus"), Ss(11, "Mermaid"), Ws(12, "Shark")})
 	result := engine.Spin()
 	if len(result) != 3 {
 		t.Error("1 reel so just give one")

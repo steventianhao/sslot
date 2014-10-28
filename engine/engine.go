@@ -67,24 +67,26 @@ func Strings2Symbols(symbolsMap map[string]*symbol, symbolNames []string) []*sym
 	return result
 }
 
+type Reel []*symbol
+
 type engine struct {
 	rows  int
-	reels [][]*symbol
+	reels []Reel
 }
 
 // spin the reels, randomly pick index for each reel, then from that symbol, get consecutive [rows] number of symbols
-func (self *engine) Spin() [][]*symbol {
+func (self *engine) Spin() []Reel {
 	random := rand.New(rand.NewSource(time.Now().UnixNano()))
-	fOneReel := func(symbols []*symbol) []*symbol {
-		l := len(symbols)
-		ri := random.Intn(l)
-		r := make([]*symbol, self.rows)
+	fOneReel := func(reel Reel) Reel {
+		length := len(reel)
+		ri := random.Intn(length)
+		r := make(Reel, self.rows)
 		for i := 0; i < self.rows; i++ {
-			r[i] = symbols[(ri+i)%l]
+			r[i] = reel[(ri+i)%length]
 		}
 		return r
 	}
-	result := make([][]*symbol, len(self.reels))
+	result := make([]Reel, len(self.reels))
 	for i, reel := range self.reels {
 		cs := fOneReel(reel)
 		result[i] = cs
@@ -92,15 +94,15 @@ func (self *engine) Spin() [][]*symbol {
 	return result
 }
 
-func NewEngine(rows int, reels ...[]*symbol) *engine {
+func NewEngine(rows int, reels ...Reel) *engine {
 	return &engine{rows, reels}
 }
 
-func SymbolOnLines(screenshot [][]*symbol, lines [][]int) [][]*symbol {
+func SymbolOnLines(reels []Reel, lines [][]int) [][]*symbol {
 	oneLine := func(line []int) []*symbol {
 		r := make([]*symbol, len(line))
 		for i, idx := range line {
-			r[i] = screenshot[i][idx]
+			r[i] = reels[i][idx]
 		}
 		return r
 	}
