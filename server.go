@@ -5,7 +5,6 @@ import (
 	"log"
 	"net/http"
 	"sslot/web"
-	"sslot/web/game"
 )
 
 type SetSessionIfMissing struct {
@@ -13,9 +12,9 @@ type SetSessionIfMissing struct {
 }
 
 func (f *SetSessionIfMissing) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	if _, err := r.Cookie(game.SESSION_ID); err != nil {
-		if sid, err := game.RandomString(); err == nil {
-			cookie := &http.Cookie{Name: game.SESSION_ID, Value: sid, Path: "/"}
+	if _, err := r.Cookie(web.SESSION_ID); err != nil {
+		if sid, err := web.RandomString(); err == nil {
+			cookie := &http.Cookie{Name: web.SESSION_ID, Value: sid, Path: "/"}
 			http.SetCookie(w, cookie)
 			f.Handler.ServeHTTP(w, r)
 		} else {
@@ -31,8 +30,6 @@ func Index(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	game.InitUsers()
-
 	r := mux.NewRouter()
 	r.HandleFunc("/auth/{name}/{password}", web.Auth).Methods("GET")
 	s := r.PathPrefix("/game").Subrouter()
