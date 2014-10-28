@@ -1,0 +1,48 @@
+package engine
+
+import (
+	//"fmt"
+	"testing"
+)
+
+func TestSpin1x1(t *testing.T) {
+	engine := NewEngine(1, []*symbol{Ns(7, "Starfish"), Ns(10, "Octopus"), Ws(12, "Shark")})
+	result := engine.Spin()
+	if len(result) != 1 {
+		t.Error("1 reel so just give one")
+	} else {
+		if len(result[0]) != 1 {
+			t.Error("1 row so just one symbol")
+		}
+	}
+	//fmt.Println("test spin of engine:", result)
+}
+
+func TestSpin2x1(t *testing.T) {
+	engine := NewEngine(2, []*symbol{Ns(7, "Starfish"), Ns(10, "Octopus"), Ws(12, "Shark")})
+	result := engine.Spin()
+	if len(result) != 1 {
+		t.Error("1 reel so just give one")
+	} else {
+		if len(result[0]) != 2 {
+			t.Error("1 row so just one symbol")
+		}
+	}
+	//fmt.Println("test spin of engine:", result)
+}
+
+func TestSpin1x3(t *testing.T) {
+	engine := NewEngine(1,
+		[]*symbol{Ns(7, "Starfish"), Ns(10, "Octopus"), Ws(12, "Shark")},
+		[]*symbol{Ns(7, "Starfish"), Ns(10, "Octopus"), Ws(12, "Shark")},
+		[]*symbol{Ns(10, "Octopus"), Ss(11, "Mermaid"), Ws(12, "Shark")})
+	result := engine.Spin()
+	if len(result) != 3 {
+		t.Error("1 reel so just give one")
+	} else {
+		if len(result[0]) != 1 || len(result[1]) != 1 || len(result[2]) != 1 {
+			t.Error("1 row so just one symbol")
+		}
+	}
+	//fmt.Println("test spin of engine:", result)
+}

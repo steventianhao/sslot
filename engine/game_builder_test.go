@@ -55,7 +55,7 @@ func TestGameBuilder(t *testing.T) {
 	screenshot := g2.build().MainSpin()
 	fmt.Println("scrrenshot:", screenshot)
 
-	symbolLines := hotLines(screenshot, lines())
+	symbolLines := SymbolOnLines(screenshot, lines())
 	for _, lines := range symbolLines {
 		for _, l := range lines {
 			fmt.Print(l.name, ",")
