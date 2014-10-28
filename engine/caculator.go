@@ -2,6 +2,11 @@ package engine
 
 import "fmt"
 
+type HitKey struct {
+	symbol string
+	counts int
+}
+
 type Win struct {
 	Symbol     *symbol
 	Counts     int
@@ -20,20 +25,25 @@ func NewWin(sym *symbol, counts int, wild bool) *Win {
 	return &Win{sym, counts, wild}
 }
 
+// if less than 2, then ZERO chance to win
 func calcNormalWins(symbols []*symbol) *Win {
+	first := symbols[0]
+	if first.isScatter() {
+		return nil
+	}
 	c := 1
-	first := *symbols[0]
 	wild := first.isWild()
 	for _, v := range symbols[1:] {
-		s := *v
-		if s == first {
+		if v.isScatter() {
+			break
+		} else if *v == *first {
 			c = c + 1
-		} else if s.isWild() {
+		} else if v.isWild() {
 			c = c + 1
 			wild = true
 		} else if first.isWild() {
 			c = c + 1
-			first = s
+			first = v
 		} else {
 			break
 		}
@@ -43,18 +53,19 @@ func calcNormalWins(symbols []*symbol) *Win {
 	} else if first.isWild() {
 		return nil
 	} else {
-		return NewWin(&first, c, wild)
+		return NewWin(first, c, wild)
 	}
 }
 
+// if less than 2, then ZERO chance to win
 func calcWildWins(symbols []*symbol) *Win {
-	c := 1
-	first := *symbols[0]
+	first := symbols[0]
 	if !first.isWild() {
 		return nil
 	}
+	c := 1
 	for _, v := range symbols[1:] {
-		if *v == first {
+		if *v == *first {
 			c = c + 1
 		} else {
 			break
@@ -63,10 +74,12 @@ func calcWildWins(symbols []*symbol) *Win {
 	if c < 2 {
 		return nil
 	} else {
-		return NewWin(&first, c, false)
+		return NewWin(first, c, false)
 	}
 }
 
+// assume just one scatter in the symbols
+// if less than 2, then ZERO chance to win
 func caclScatterWins(screenshot [][]*symbol) *Win {
 	hasScatter := func(strip []*symbol) (bool, *symbol) {
 		for _, v := range strip {
