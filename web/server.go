@@ -9,9 +9,9 @@ import (
 	"github.com/landjur/go-decimal"
 	"log"
 	"net/http"
+	"sslot/web/game"
 	"strconv"
 	"time"
-	"wslot/game"
 )
 
 type SetSessionIfMissing struct {
