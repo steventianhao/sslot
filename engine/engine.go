@@ -98,15 +98,18 @@ func NewEngine(rows int, reels ...Reel) *engine {
 	return &engine{rows, reels}
 }
 
-func SymbolOnLines(reels []Reel, lines [][]int) [][]*symbol {
+type Line []int
+type SLine []*symbol
+
+func SymbolOnLines(reels []Reel, lines [][]int) []SLine {
 	oneLine := func(line []int) []*symbol {
-		r := make([]*symbol, len(line))
+		r := make(SLine, len(line))
 		for i, idx := range line {
 			r[i] = reels[i][idx]
 		}
 		return r
 	}
-	r := make([][]*symbol, len(lines))
+	r := make([]SLine, len(lines))
 	for i, line := range lines {
 		r[i] = oneLine(line)
 	}

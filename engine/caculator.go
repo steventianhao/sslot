@@ -26,7 +26,7 @@ func NewWin(sym *symbol, counts int, wild bool) *Win {
 }
 
 // if less than 2, then ZERO chance to win
-func calcNormalWins(symbols []*symbol) *Win {
+func calcNormalWins(symbols SLine) *Win {
 	first := symbols[0]
 	if first.isScatter() {
 		return nil
@@ -58,7 +58,7 @@ func calcNormalWins(symbols []*symbol) *Win {
 }
 
 // if less than 2, then ZERO chance to win
-func calcWildWins(symbols []*symbol) *Win {
+func calcWildWins(symbols SLine) *Win {
 	first := symbols[0]
 	if !first.isWild() {
 		return nil
@@ -80,7 +80,7 @@ func calcWildWins(symbols []*symbol) *Win {
 
 // assume just one scatter in the symbols
 // if less than 2, then ZERO chance to win
-func caclScatterWins(screenshot [][]*symbol) *Win {
+func caclScatterWins(reels []Reel) *Win {
 	hasScatter := func(strip []*symbol) (bool, *symbol) {
 		for _, v := range strip {
 			if v.isScatter() {
@@ -89,12 +89,12 @@ func caclScatterWins(screenshot [][]*symbol) *Win {
 		}
 		return false, nil
 	}
-	isScatter, first := hasScatter(screenshot[0])
+	isScatter, first := hasScatter(reels[0])
 	if !isScatter {
 		return nil
 	}
 	c := 1
-	for _, strip := range screenshot[1:] {
+	for _, strip := range reels[1:] {
 		if ok, _ := hasScatter(strip); ok {
 			c = c + 1
 		} else {

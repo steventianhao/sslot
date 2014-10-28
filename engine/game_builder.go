@@ -5,8 +5,6 @@ import (
 	"fmt"
 )
 
-type Line []int
-
 type GameBuilder struct {
 	nRows, nCols, nLines int
 	symbols              map[string]*symbol

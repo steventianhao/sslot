@@ -171,18 +171,18 @@ func TestCalcWin(t *testing.T) {
 }
 
 func TestCalcScatter1(t *testing.T) {
-	matrix := [][]*symbol{
-		[]*symbol{Ns(0, "Nine"), Ns(1, "Ten"), Ss(11, "Mermaid")},
-		[]*symbol{Ns(3, "Queen"), Ss(11, "Mermaid"), Ns(4, "King")},
-		[]*symbol{Ns(5, "Ace"), Ns(6, "Clam"), Ns(7, "Starfish")},
+	matrix := []Reel{
+		Reel{Ns(0, "Nine"), Ns(1, "Ten"), Ss(11, "Mermaid")},
+		Reel{Ns(3, "Queen"), Ss(11, "Mermaid"), Ns(4, "King")},
+		Reel{Ns(5, "Ace"), Ns(6, "Clam"), Ns(7, "Starfish")},
 	}
 	w := caclScatterWins(matrix)
 	expect(t, w, NewWin(Ss(11, "Mermaid"), 2, false))
 
-	matrix = [][]*symbol{
-		[]*symbol{Ss(11, "Mermaid"), Ns(0, "Nine"), Ns(1, "Ten")},
-		[]*symbol{Ns(3, "Queen"), Ss(11, "Mermaid"), Ns(4, "King")},
-		[]*symbol{Ns(5, "Ace"), Ns(6, "Clam"), Ns(7, "Starfish")},
+	matrix = []Reel{
+		Reel{Ss(11, "Mermaid"), Ns(0, "Nine"), Ns(1, "Ten")},
+		Reel{Ns(3, "Queen"), Ss(11, "Mermaid"), Ns(4, "King")},
+		Reel{Ns(5, "Ace"), Ns(6, "Clam"), Ns(7, "Starfish")},
 	}
 	w = caclScatterWins(matrix)
 	expect(t, w, NewWin(Ss(11, "Mermaid"), 2, false))
@@ -190,36 +190,36 @@ func TestCalcScatter1(t *testing.T) {
 }
 
 func TestCalcScatter2(t *testing.T) {
-	matrix := [][]*symbol{
-		[]*symbol{Ns(0, "Nine"), Ns(1, "Ten"), Ss(11, "Mermaid")},
-		[]*symbol{Ns(5, "Ace"), Ns(6, "Clam"), Ns(7, "Starfish")},
-		[]*symbol{Ns(3, "Queen"), Ss(11, "Mermaid"), Ns(4, "King")},
+	matrix := []Reel{
+		Reel{Ns(0, "Nine"), Ns(1, "Ten"), Ss(11, "Mermaid")},
+		Reel{Ns(5, "Ace"), Ns(6, "Clam"), Ns(7, "Starfish")},
+		Reel{Ns(3, "Queen"), Ss(11, "Mermaid"), Ns(4, "King")},
 	}
 	w := caclScatterWins(matrix)
 	expect(t, w, nil)
 
-	matrix = [][]*symbol{
-		[]*symbol{Ss(11, "Mermaid"), Ns(0, "Nine"), Ns(1, "Ten")},
-		[]*symbol{Ns(5, "Ace"), Ns(6, "Clam"), Ns(7, "Starfish")},
-		[]*symbol{Ns(3, "Queen"), Ss(11, "Mermaid"), Ns(4, "King")},
+	matrix = []Reel{
+		Reel{Ss(11, "Mermaid"), Ns(0, "Nine"), Ns(1, "Ten")},
+		Reel{Ns(5, "Ace"), Ns(6, "Clam"), Ns(7, "Starfish")},
+		Reel{Ns(3, "Queen"), Ss(11, "Mermaid"), Ns(4, "King")},
 	}
 	w = caclScatterWins(matrix)
 	expect(t, w, nil)
 }
 
 func TestCalcScatter3(t *testing.T) {
-	matrix := [][]*symbol{
-		[]*symbol{Ns(5, "Ace"), Ns(6, "Clam"), Ns(7, "Starfish")},
-		[]*symbol{Ns(0, "Nine"), Ns(1, "Ten"), Ss(11, "Mermaid")},
-		[]*symbol{Ns(3, "Queen"), Ss(11, "Mermaid"), Ns(4, "King")},
+	matrix := []Reel{
+		Reel{Ns(5, "Ace"), Ns(6, "Clam"), Ns(7, "Starfish")},
+		Reel{Ns(0, "Nine"), Ns(1, "Ten"), Ss(11, "Mermaid")},
+		Reel{Ns(3, "Queen"), Ss(11, "Mermaid"), Ns(4, "King")},
 	}
 	w := caclScatterWins(matrix)
 	expect(t, w, nil)
 
-	matrix = [][]*symbol{
-		[]*symbol{Ns(5, "Ace"), Ns(6, "Clam"), Ns(7, "Starfish")},
-		[]*symbol{Ss(11, "Mermaid"), Ns(0, "Nine"), Ns(1, "Ten")},
-		[]*symbol{Ss(11, "Mermaid"), Ns(3, "Queen"), Ns(4, "King")},
+	matrix = []Reel{
+		Reel{Ns(5, "Ace"), Ns(6, "Clam"), Ns(7, "Starfish")},
+		Reel{Ss(11, "Mermaid"), Ns(0, "Nine"), Ns(1, "Ten")},
+		Reel{Ss(11, "Mermaid"), Ns(3, "Queen"), Ns(4, "King")},
 	}
 	w = caclScatterWins(matrix)
 	expect(t, w, nil)
