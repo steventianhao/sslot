@@ -124,5 +124,5 @@ func FeatureGameReelStrips() [][]string {
 }
 
 func lines() [][]int {
-	return lines3x5[:][:]
+	return lines3x5
 }
