@@ -18,15 +18,15 @@ type symbol struct {
 	kind int
 }
 
-func Ns(id int, name string) *symbol {
+func ns(id int, name string) *symbol {
 	return &symbol{id, name, Normal}
 }
 
-func Ss(id int, name string) *symbol {
+func ss(id int, name string) *symbol {
 	return &symbol{id, name, Scatter}
 }
 
-func Ws(id int, name string) *symbol {
+func ws(id int, name string) *symbol {
 	return &symbol{id, name, Wild}
 }
 
@@ -51,7 +51,7 @@ func (s symbol) isScatter() bool {
 	return s.kind == Scatter
 }
 
-func Symbols2Map(symbols []*symbol) map[string]*symbol {
+func symbols2Map(symbols []*symbol) map[string]*symbol {
 	m := make(map[string]*symbol)
 	for _, s := range symbols {
 		m[s.name] = s
@@ -59,7 +59,17 @@ func Symbols2Map(symbols []*symbol) map[string]*symbol {
 	return m
 }
 
-func Strings2Symbols(symbolsMap map[string]*symbol, symbolNames []string) []*symbol {
+func checkSymbolNames(symbolsMap map[string]*symbol, symbolNames []string) bool {
+	for _, n := range symbolNames {
+		_, ok := symbolsMap[n]
+		if !ok {
+			return false
+		}
+	}
+	return true
+}
+
+func strings2Symbols(symbolsMap map[string]*symbol, symbolNames []string) []*symbol {
 	result := make([]*symbol, len(symbolNames))
 	for i, n := range symbolNames {
 		result[i] = symbolsMap[n]
@@ -75,7 +85,7 @@ type engine struct {
 }
 
 // spin the reels, randomly pick index for each reel, then from that symbol, get consecutive [rows] number of symbols
-func (self *engine) Spin() []Reel {
+func (self *engine) spin() []Reel {
 	random := rand.New(rand.NewSource(time.Now().UnixNano()))
 	fOneReel := func(reel Reel) Reel {
 		length := len(reel)
@@ -94,14 +104,14 @@ func (self *engine) Spin() []Reel {
 	return result
 }
 
-func NewEngine(rows int, reels ...Reel) *engine {
+func createEngine(rows int, reels ...Reel) *engine {
 	return &engine{rows, reels}
 }
 
 type Line []int
 type SLine []*symbol
 
-func SymbolOnLines(reels []Reel, lines []Line) []SLine {
+func symbolOnLines(reels []Reel, lines []Line) []SLine {
 	oneLine := func(line Line) SLine {
 		r := make(SLine, len(line))
 		for i, idx := range line {

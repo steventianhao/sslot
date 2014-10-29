@@ -1,62 +1,48 @@
 package engine
 
 import (
-	"errors"
 	"fmt"
 )
 
-type GameBuilder struct {
-	nRows, nCols, nLines int
-	symbols              map[string]*symbol
-	reels                []Reel
-	lines                []Line
+const (
+	MODE_NORMAL  = "_slot_mode_normal_"
+	MODE_FEATURE = "_slot_mode_feature_"
+)
+
+type GameCore struct {
+	mode    string
+	rows    int
+	symbols map[string]*symbol
+	reels   []Reel
 }
 
-func NewGameBuilder(rows, columns, lines int) *GameBuilder {
-	return &GameBuilder{nRows: rows, nCols: columns, nLines: lines}
+func (g GameCore) nReels() int {
+	return len(g.reels)
 }
 
-func (g *GameBuilder) SetSymbols(symbols []*symbol) *GameBuilder {
-	m := make(map[string]*symbol)
-	for _, v := range symbols {
-		m[v.name] = v
-	}
-	g.symbols = m
-	return g
+func (g GameCore) nSymbols() int {
+	return len(g.symbols)
 }
 
-func (g GameBuilder) str2symbol(str string) (*symbol, error) {
-	if s, found := g.symbols[str]; found {
-		return s, nil
-	}
-	es := fmt.Sprint("symbols name is not correct ", str)
-	return nil, errors.New(es)
-}
-
-func (g *GameBuilder) SetReels(reels ...[]string) (*GameBuilder, error) {
-	length := len(reels)
-	if length != g.nCols {
-		es := fmt.Sprint("columns is ", g.nCols, " but reels columns is ", length)
-		return nil, errors.New(es)
-	}
-	g.reels = make([]Reel, g.nCols)
+func (g *GameCore) setReels(reels [][]string) (*GameCore, error) {
+	g.reels = make([]Reel, len(reels))
 	for i, v := range reels {
-		l := len(v)
-		one := make(Reel, l)
-		for j, v2 := range v {
-			s, err := g.str2symbol(v2)
-			if err != nil {
-				return nil, err
-			}
-			one[j] = s
+		if !checkSymbolNames(g.symbols, v) {
+			return nil, fmt.Errorf("symbol name {%s} is not correct", v)
 		}
-		g.reels[i] = one
+		g.reels[i] = strings2Symbols(g.symbols, v)
 	}
 	return g, nil
 }
 
-func (g *GameBuilder) build() *engine {
-	return NewEngine(g.nRows, g.reels...)
+func createGameCore(mode string, rows int, symbols []*symbol, reels ...[]string) (*GameCore, error) {
+	gc := &GameCore{mode: mode, rows: rows}
+	gc.symbols = symbols2Map(symbols)
+	return gc.setReels(reels)
+}
+
+func (g *GameCore) spin() []Reel {
+	return createEngine(g.rows, g.reels...).spin()
 }
 
 type Hit struct {

@@ -6,22 +6,22 @@ import (
 )
 
 var testSymbols = []*symbol{
-	Ns(0, "Nine"),
-	Ns(1, "Ten"),
-	Ns(2, "Jack"),
-	Ns(3, "Queen"),
-	Ns(4, "King"),
-	Ns(5, "Ace"),
-	Ns(6, "Clam"),
-	Ns(7, "Starfish"),
-	Ns(8, "Nemo"),
-	Ns(9, "Green"),
-	Ns(10, "Octopus"),
-	Ss(11, "Mermaid"),
-	Ws(12, "Shark"),
+	ns(0, "Nine"),
+	ns(1, "Ten"),
+	ns(2, "Jack"),
+	ns(3, "Queen"),
+	ns(4, "King"),
+	ns(5, "Ace"),
+	ns(6, "Clam"),
+	ns(7, "Starfish"),
+	ns(8, "Nemo"),
+	ns(9, "Green"),
+	ns(10, "Octopus"),
+	ss(11, "Mermaid"),
+	ws(12, "Shark"),
 }
 
-var testSymbolsMap = Symbols2Map(testSymbols)
+var testSymbolsMap = symbols2Map(testSymbols)
 
 func expect(t *testing.T, a *Win, b *Win) {
 	if b != nil && a != nil {
@@ -39,45 +39,45 @@ func expect(t *testing.T, a *Win, b *Win) {
 
 func TestCalcNormalWins(t *testing.T) {
 	sstr := []string{"Nine", "Ten", "Jack", "Queen", "King"}
-	ss := Strings2Symbols(testSymbolsMap, sstr)
+	ss := strings2Symbols(testSymbolsMap, sstr)
 	w1 := calcNormalWins(ss)
 	expect(t, w1, nil)
 
 	sstr = []string{"Mermaid", "Nine", "Nine", "Nine", "Nine"}
-	ss = Strings2Symbols(testSymbolsMap, sstr)
+	ss = strings2Symbols(testSymbolsMap, sstr)
 	w1 = calcNormalWins(ss)
 	expect(t, w1, nil)
 
 	sstr = []string{"Mermaid", "Mermaid", "Nine", "Nine", "Nine"}
-	ss = Strings2Symbols(testSymbolsMap, sstr)
+	ss = strings2Symbols(testSymbolsMap, sstr)
 	w1 = calcNormalWins(ss)
 	expect(t, w1, nil)
 
 	sstr = []string{"Shark", "Mermaid", "Nine", "Nine", "Nine"}
-	ss = Strings2Symbols(testSymbolsMap, sstr)
+	ss = strings2Symbols(testSymbolsMap, sstr)
 	w1 = calcNormalWins(ss)
 	expect(t, w1, nil)
 
 	sstr = []string{"Mermaid", "Shark", "Nine", "Nine", "Nine"}
-	ss = Strings2Symbols(testSymbolsMap, sstr)
+	ss = strings2Symbols(testSymbolsMap, sstr)
 	w1 = calcNormalWins(ss)
 	expect(t, w1, nil)
 
 	sstr = []string{"Nine", "Nine", "Mermaid", "Nine", "Nine"}
-	ss = Strings2Symbols(testSymbolsMap, sstr)
+	ss = strings2Symbols(testSymbolsMap, sstr)
 	w1 = calcNormalWins(ss)
 	fmt.Println("TestCalcNormalWins", w1)
-	expect(t, w1, NewWin(Ns(0, "Nine"), 2, false))
+	expect(t, w1, NewWin(ns(0, "Nine"), 2, false))
 
 	sstr = []string{"Nine", "Shark", "Mermaid", "Nine", "Nine"}
-	ss = Strings2Symbols(testSymbolsMap, sstr)
+	ss = strings2Symbols(testSymbolsMap, sstr)
 	w1 = calcNormalWins(ss)
 	fmt.Println("TestCalcNormalWins", w1)
-	expect(t, w1, NewWin(Ns(0, "Nine"), 2, true))
+	expect(t, w1, NewWin(ns(0, "Nine"), 2, true))
 
 	sstr = []string{"Shark", "Nine", "Mermaid", "Nine", "Nine"}
-	ss = Strings2Symbols(testSymbolsMap, sstr)
+	ss = strings2Symbols(testSymbolsMap, sstr)
 	w1 = calcNormalWins(ss)
 	fmt.Println("TestCalcNormalWins", w1)
-	expect(t, w1, NewWin(Ns(0, "Nine"), 2, true))
+	expect(t, w1, NewWin(ns(0, "Nine"), 2, true))
 }
