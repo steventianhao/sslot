@@ -6,6 +6,9 @@ package engine
 2 2 2 2 2
 so for example {1, 1, 1, 1, 1} is the line from left to right in the middle, 5 ones
 */
+
+type Line []int
+
 var Lines3x5 = []Line{
 	Line{1, 1, 1, 1, 1},
 	Line{0, 0, 0, 0, 0},

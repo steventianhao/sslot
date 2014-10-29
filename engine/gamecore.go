@@ -67,7 +67,7 @@ func (nH Hit) key() HitKey {
 	return nH.HitKey
 }
 
-func MakeHitMap(hits []*Hit) map[HitKey]*Hit {
+func makeHitMap(hits []*Hit) map[HitKey]*Hit {
 	m := make(map[HitKey]*Hit)
 	for _, v := range hits {
 		m[v.key()] = v

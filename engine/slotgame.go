@@ -65,7 +65,7 @@ func (g *SlotGame) AddGameCore(mode string, symbols []*Symbol, reels ...[]string
 }
 
 func (g *SlotGame) AddHits(normalHits, wildHits, scatterHits []*Hit) {
-	g.normalHits = MakeHitMap(normalHits)
-	g.wildHits = MakeHitMap(wildHits)
-	g.scatterHits = MakeHitMap(scatterHits)
+	g.normalHits = makeHitMap(normalHits)
+	g.wildHits = makeHitMap(wildHits)
+	g.scatterHits = makeHitMap(scatterHits)
 }
