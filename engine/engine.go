@@ -12,25 +12,25 @@ const (
 	Wild    = 2
 )
 
-type symbol struct {
+type Symbol struct {
 	id   int
 	name string
 	kind int
 }
 
-func ns(id int, name string) *symbol {
-	return &symbol{id, name, Normal}
+func Ns(id int, name string) *Symbol {
+	return &Symbol{id, name, Normal}
 }
 
-func ss(id int, name string) *symbol {
-	return &symbol{id, name, Scatter}
+func Ss(id int, name string) *Symbol {
+	return &Symbol{id, name, Scatter}
 }
 
-func ws(id int, name string) *symbol {
-	return &symbol{id, name, Wild}
+func Ws(id int, name string) *Symbol {
+	return &Symbol{id, name, Wild}
 }
 
-func (s symbol) String() string {
+func (s Symbol) String() string {
 	var k string
 	switch s.kind {
 	default:
@@ -43,23 +43,23 @@ func (s symbol) String() string {
 	return fmt.Sprint("id:", s.id, ",kind:", k, ",name:", s.name)
 }
 
-func (s symbol) isWild() bool {
+func (s Symbol) isWild() bool {
 	return s.kind == Wild
 }
 
-func (s symbol) isScatter() bool {
+func (s Symbol) isScatter() bool {
 	return s.kind == Scatter
 }
 
-func symbols2Map(symbols []*symbol) map[string]*symbol {
-	m := make(map[string]*symbol)
+func symbols2Map(symbols []*Symbol) map[string]*Symbol {
+	m := make(map[string]*Symbol)
 	for _, s := range symbols {
 		m[s.name] = s
 	}
 	return m
 }
 
-func checkSymbolNames(symbolsMap map[string]*symbol, symbolNames []string) bool {
+func checkSymbolNames(symbolsMap map[string]*Symbol, symbolNames []string) bool {
 	for _, n := range symbolNames {
 		_, ok := symbolsMap[n]
 		if !ok {
@@ -69,15 +69,15 @@ func checkSymbolNames(symbolsMap map[string]*symbol, symbolNames []string) bool 
 	return true
 }
 
-func strings2Symbols(symbolsMap map[string]*symbol, symbolNames []string) []*symbol {
-	result := make([]*symbol, len(symbolNames))
+func strings2Symbols(symbolsMap map[string]*Symbol, symbolNames []string) []*Symbol {
+	result := make([]*Symbol, len(symbolNames))
 	for i, n := range symbolNames {
 		result[i] = symbolsMap[n]
 	}
 	return result
 }
 
-type Reel []*symbol
+type Reel []*Symbol
 
 type engine struct {
 	rows  int
@@ -109,7 +109,7 @@ func createEngine(rows int, reels ...Reel) *engine {
 }
 
 type Line []int
-type SLine []*symbol
+type SLine []*Symbol
 
 func symbolOnLines(reels []Reel, lines []Line) []SLine {
 	oneLine := func(line Line) SLine {

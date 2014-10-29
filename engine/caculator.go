@@ -3,12 +3,12 @@ package engine
 import "fmt"
 
 type HitKey struct {
-	symbol string
+	Symbol string
 	counts int
 }
 
 type Win struct {
-	Symbol     *symbol
+	Symbol     *Symbol
 	Counts     int
 	Substitute bool
 }
@@ -21,7 +21,7 @@ func (w Win) key() HitKey {
 	return HitKey{w.Symbol.name, w.Counts}
 }
 
-func NewWin(sym *symbol, counts int, wild bool) *Win {
+func NewWin(sym *Symbol, counts int, wild bool) *Win {
 	return &Win{sym, counts, wild}
 }
 
@@ -81,7 +81,7 @@ func calcWildWins(symbols SLine) *Win {
 // assume just one scatter in the symbols
 // if less than 2, then ZERO chance to win
 func caclScatterWins(reels []Reel) *Win {
-	hasScatter := func(strip []*symbol) (bool, *symbol) {
+	hasScatter := func(strip []*Symbol) (bool, *Symbol) {
 		for _, v := range strip {
 			if v.isScatter() {
 				return true, v

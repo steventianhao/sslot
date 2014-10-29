@@ -4,15 +4,10 @@ import (
 	"fmt"
 )
 
-const (
-	MODE_NORMAL  = "_slot_mode_normal_"
-	MODE_FEATURE = "_slot_mode_feature_"
-)
-
 type GameCore struct {
 	mode    string
 	rows    int
-	symbols map[string]*symbol
+	symbols map[string]*Symbol
 	reels   []Reel
 }
 
@@ -24,21 +19,24 @@ func (g GameCore) nSymbols() int {
 	return len(g.symbols)
 }
 
-func (g *GameCore) setReels(reels [][]string) (*GameCore, error) {
+func (g *GameCore) setReels(reels [][]string) error {
 	g.reels = make([]Reel, len(reels))
 	for i, v := range reels {
 		if !checkSymbolNames(g.symbols, v) {
-			return nil, fmt.Errorf("symbol name {%s} is not correct", v)
+			return fmt.Errorf("symbol name {%s} is not correct", v)
 		}
 		g.reels[i] = strings2Symbols(g.symbols, v)
 	}
-	return g, nil
+	return nil
 }
 
-func createGameCore(mode string, rows int, symbols []*symbol, reels ...[]string) (*GameCore, error) {
+func createGameCore(mode string, rows int, symbols []*Symbol, reels ...[]string) (*GameCore, error) {
 	gc := &GameCore{mode: mode, rows: rows}
 	gc.symbols = symbols2Map(symbols)
-	return gc.setReels(reels)
+	if err := gc.setReels(reels); err != nil {
+		return nil, err
+	}
+	return gc, nil
 }
 
 func (g *GameCore) spin() []Reel {
@@ -67,6 +65,14 @@ func NewFeatureHit(symbol string, counts, ratio, features, multiplier int) *Hit 
 
 func (nH Hit) key() HitKey {
 	return nH.HitKey
+}
+
+func MakeHitMap(hits []*Hit) map[HitKey]*Hit {
+	m := make(map[HitKey]*Hit)
+	for _, v := range hits {
+		m[v.key()] = v
+	}
+	return m
 }
 
 func caclHitResult(win *Win, hits map[HitKey]*Hit) *HitResult {
