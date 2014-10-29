@@ -13,14 +13,14 @@ const (
 	MODE_FEATURE = "feature"
 )
 
-func InitGames() map[string]*engine.Game {
-	m := make(map[string]*engine.Game)
+func InitGames() map[string]*engine.SlotGame {
+	m := make(map[string]*engine.SlotGame)
 	g1 := createUnderWater()
 	m[g1.Name()] = g1
 	return m
 }
 
-func createUnderWater() *engine.Game {
+func createUnderWater() *engine.SlotGame {
 	var err error
 	g1 := engine.CreateGame(1, "underwater", 3, 5, 15)
 	err = g1.SetLines(underwater.Lines)

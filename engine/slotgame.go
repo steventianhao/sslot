@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-type Game struct {
+type SlotGame struct {
 	id          int
 	name        string
 	nRows       int
@@ -17,11 +17,11 @@ type Game struct {
 	scatterHits map[HitKey]*Hit
 }
 
-func (g Game) Name() string {
+func (g SlotGame) Name() string {
 	return g.name
 }
 
-func (g Game) Spin(mode string) ([]Reel, error) {
+func (g SlotGame) Spin(mode string) ([]Reel, error) {
 	gc, ok := g.gameCores[mode]
 	if !ok {
 		return nil, fmt.Errorf("game mode [%s] not found", mode)
@@ -29,11 +29,11 @@ func (g Game) Spin(mode string) ([]Reel, error) {
 	return gc.spin(), nil
 }
 
-func CreateGame(id int, name string, nRows, nReels, nLines int) *Game {
-	return &Game{id: id, name: name, nRows: nRows, nReels: nReels, nLines: nLines, gameCores: make(map[string]*GameCore)}
+func CreateGame(id int, name string, nRows, nReels, nLines int) *SlotGame {
+	return &SlotGame{id: id, name: name, nRows: nRows, nReels: nReels, nLines: nLines, gameCores: make(map[string]*GameCore)}
 }
 
-func (g *Game) SetLines(lines []Line) error {
+func (g *SlotGame) SetLines(lines []Line) error {
 	nLines := len(lines)
 	if nLines != g.nLines {
 		return fmt.Errorf("lines specified as %d not match the lines given %d", g.nLines, nLines)
@@ -52,7 +52,7 @@ func (g *Game) SetLines(lines []Line) error {
 	return nil
 }
 
-func (g *Game) AddGameCore(mode string, symbols []*Symbol, reels ...[]string) error {
+func (g *SlotGame) AddGameCore(mode string, symbols []*Symbol, reels ...[]string) error {
 	if len(reels) != g.nReels {
 		return fmt.Errorf("reels length should be %d instead of %d", g.nReels, len(reels))
 	}
@@ -64,7 +64,7 @@ func (g *Game) AddGameCore(mode string, symbols []*Symbol, reels ...[]string) er
 	return nil
 }
 
-func (g *Game) AddHits(normalHits, wildHits, scatterHits []*Hit) {
+func (g *SlotGame) AddHits(normalHits, wildHits, scatterHits []*Hit) {
 	g.normalHits = MakeHitMap(normalHits)
 	g.wildHits = MakeHitMap(wildHits)
 	g.scatterHits = MakeHitMap(scatterHits)
