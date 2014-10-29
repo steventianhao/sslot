@@ -123,6 +123,6 @@ func FeatureGameReelStrips() [][]string {
 	return [][]string{reels0[:], reels1[:], reels2[:], reels3[:], reels4[:]}
 }
 
-func lines() [][]int {
+func lines() []Line {
 	return lines3x5
 }

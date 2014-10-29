@@ -101,8 +101,8 @@ func NewEngine(rows int, reels ...Reel) *engine {
 type Line []int
 type SLine []*symbol
 
-func SymbolOnLines(reels []Reel, lines [][]int) []SLine {
-	oneLine := func(line []int) []*symbol {
+func SymbolOnLines(reels []Reel, lines []Line) []SLine {
+	oneLine := func(line Line) SLine {
 		r := make(SLine, len(line))
 		for i, idx := range line {
 			r[i] = reels[i][idx]
