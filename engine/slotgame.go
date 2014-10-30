@@ -76,9 +76,9 @@ type Key struct {
 }
 
 type Reward struct {
-	ratio      int
-	features   int
-	multiplier int
+	Ratio      int
+	Features   int
+	Multiplier int
 }
 
 type Hit struct {
@@ -93,7 +93,7 @@ type HitResult struct {
 
 // if there's subsitute in line, then ratio multiply 2
 func (hr HitResult) ratio() int {
-	ratio := hr.reward.ratio
+	ratio := hr.reward.Ratio
 	if hr.win.Substitute {
 		return ratio * 2
 	}
@@ -134,13 +134,13 @@ func (lw LineWin) String() string {
 }
 
 type SpinResult struct {
-	reels      []Reel
-	lineWins   []*LineWin
-	scatterWin *Reward
+	Reels      []Reel
+	LineWins   []*LineWin
+	ScatterWin *Reward
 }
 
 func (sr SpinResult) String() string {
-	return fmt.Sprint("reels:", sr.reels, "lineWins:", sr.lineWins, "scatterWin:", sr.scatterWin)
+	return fmt.Sprint("reels:", sr.Reels, "lineWins:", sr.LineWins, "scatterWin:", sr.ScatterWin)
 }
 
 func (g SlotGame) SpinResult(mode string) (*SpinResult, error) {

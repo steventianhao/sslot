@@ -52,7 +52,7 @@ func calcNormalWins(symbols SLine) *Win {
 	} else if first.isWild() {
 		return nil
 	} else {
-		return NewNormalWin(first.name, c, wild)
+		return NewNormalWin(first.Name, c, wild)
 	}
 }
 
@@ -73,7 +73,7 @@ func calcWildWins(symbols SLine) *Win {
 	if c < 2 {
 		return nil
 	} else {
-		return NewOtherWin(first.name, c)
+		return NewOtherWin(first.Name, c)
 	}
 }
 
@@ -103,7 +103,7 @@ func caclScatterWins(reels []Reel) *Win {
 	if c < 2 {
 		return nil
 	} else {
-		return NewOtherWin(first.name, c)
+		return NewOtherWin(first.Name, c)
 	}
 }
 

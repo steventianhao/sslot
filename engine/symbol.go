@@ -7,8 +7,8 @@ const (
 )
 
 type Symbol struct {
-	id   int
-	name string
+	Id   int
+	Name string
 	kind int
 }
 
@@ -25,7 +25,7 @@ func Ws(id int, name string) *Symbol {
 }
 
 func (s Symbol) String() string {
-	return s.name
+	return s.Name
 }
 
 func (s Symbol) isWild() bool {
@@ -39,7 +39,7 @@ func (s Symbol) isScatter() bool {
 func symbols2Map(symbols []*Symbol) map[string]*Symbol {
 	m := make(map[string]*Symbol)
 	for _, s := range symbols {
-		m[s.name] = s
+		m[s.Name] = s
 	}
 	return m
 }
