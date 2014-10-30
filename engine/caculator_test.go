@@ -25,7 +25,7 @@ var testSymbolsMap = symbols2Map(testSymbols)
 
 func expect(t *testing.T, a *Win, b *Win) {
 	if b != nil && a != nil {
-		if *(a.Symbol) != *(b.Symbol) || a.Counts != b.Counts || a.Substitute != b.Substitute {
+		if *a != *b {
 			es := fmt.Sprint("[", *a, "] should equal to [", *b, "]")
 			t.Error(es)
 		}
@@ -67,17 +67,17 @@ func TestCalcNormalWins(t *testing.T) {
 	ss = strings2Symbols(testSymbolsMap, sstr)
 	w1 = calcNormalWins(ss)
 	fmt.Println("TestCalcNormalWins", w1)
-	expect(t, w1, NewWin(Ns(0, "Nine"), 2, false))
+	expect(t, w1, NewWin("Nine", 2, false))
 
 	sstr = []string{"Nine", "Shark", "Mermaid", "Nine", "Nine"}
 	ss = strings2Symbols(testSymbolsMap, sstr)
 	w1 = calcNormalWins(ss)
 	fmt.Println("TestCalcNormalWins", w1)
-	expect(t, w1, NewWin(Ns(0, "Nine"), 2, true))
+	expect(t, w1, NewWin("Nine", 2, true))
 
 	sstr = []string{"Shark", "Nine", "Mermaid", "Nine", "Nine"}
 	ss = strings2Symbols(testSymbolsMap, sstr)
 	w1 = calcNormalWins(ss)
 	fmt.Println("TestCalcNormalWins", w1)
-	expect(t, w1, NewWin(Ns(0, "Nine"), 2, true))
+	expect(t, w1, NewWin("Nine", 2, true))
 }

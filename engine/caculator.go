@@ -3,30 +3,29 @@ package engine
 import "fmt"
 
 type Win struct {
-	Symbol     *Symbol
-	Counts     int
+	HitKey
 	Substitute bool
 }
 
 func (w Win) String() string {
-	return fmt.Sprint(w.Symbol, w.Counts, w.Substitute)
+	return fmt.Sprint("symbol:", w.HitKey.Symbol, ",counts:", w.HitKey.counts, ",substitude:", w.Substitute)
 }
 
 func (w Win) key() HitKey {
-	return HitKey{w.Symbol.name, w.Counts}
+	return w.HitKey
 }
 
-func NewNormalWin(sym *Symbol, counts int, wild bool) *Win {
-	return &Win{sym, counts, wild}
+func NewNormalWin(sym string, counts int, wild bool) *Win {
+	return &Win{HitKey{sym, counts}, wild}
 }
 
-func NewOtherWin(sym *Symbol, counts int) *Win {
-	return &Win{sym, counts, false}
+func NewOtherWin(sym string, counts int) *Win {
+	return &Win{HitKey{sym, counts}, false}
 }
 
 //deprecated, later romove this function
-func NewWin(sym *Symbol, counts int, wild bool) *Win {
-	return &Win{sym, counts, wild}
+func NewWin(sym string, counts int, wild bool) *Win {
+	return &Win{HitKey{sym, counts}, wild}
 }
 
 // if less than 2, then ZERO chance to win
@@ -57,7 +56,7 @@ func calcNormalWins(symbols SLine) *Win {
 	} else if first.isWild() {
 		return nil
 	} else {
-		return NewNormalWin(first, c, wild)
+		return NewNormalWin(first.name, c, wild)
 	}
 }
 
@@ -78,7 +77,7 @@ func calcWildWins(symbols SLine) *Win {
 	if c < 2 {
 		return nil
 	} else {
-		return NewOtherWin(first, c)
+		return NewOtherWin(first.name, c)
 	}
 }
 
@@ -108,7 +107,7 @@ func caclScatterWins(reels []Reel) *Win {
 	if c < 2 {
 		return nil
 	} else {
-		return NewOtherWin(first, c)
+		return NewOtherWin(first.name, c)
 	}
 }
 

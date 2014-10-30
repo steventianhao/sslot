@@ -128,15 +128,13 @@ type ScatterWin struct {
 }
 
 type LineWin struct {
-	LineId    int
-	Symbol    string
-	Counts    int
-	Subsitute bool
-	Ratio     int
+	LineId int
+	Ratio  int
+	Win    *Win
 }
 
 func (lw LineWin) String() string {
-	return fmt.Sprint("{lineId:", lw.LineId+1, " symbol:", lw.Symbol, " counts:", lw.Counts, " substitute:", lw.Subsitute, " ratio:", lw.Ratio, "}")
+	return fmt.Sprint("{lineId:", lw.LineId+1, ",", lw.Win, ",ratio:", lw.Ratio, "}")
 }
 
 type SpinResult struct {
@@ -179,7 +177,7 @@ func (g SlotGame) SpinResult(mode string) (*SpinResult, error) {
 		} else {
 			hr = whr
 		}
-		lineWins = append(lineWins, &LineWin{i, hr.hit.Symbol, hr.hit.counts, hr.win.Substitute, hr.ratio()})
+		lineWins = append(lineWins, &LineWin{i, hr.ratio(), hr.win})
 	}
 	if sw := caclScatterWins(reels); sw != nil {
 		if shr := caclHitResult(sw, g.scatterHits); shr != nil {
