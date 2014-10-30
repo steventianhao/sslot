@@ -69,3 +69,42 @@ func (g *SlotGame) AddHits(normalHits, wildHits, scatterHits []*Hit) {
 	g.wildHits = makeHitMap(wildHits)
 	g.scatterHits = makeHitMap(scatterHits)
 }
+
+type Hit struct {
+	HitKey
+	ratio      int
+	features   int
+	multiplier int
+}
+
+type HitResult struct {
+	win *Win
+	hit *Hit
+}
+
+func NewHit(symbol string, counts int, ratio int) *Hit {
+	return &Hit{HitKey{symbol, counts}, ratio, 0, 0}
+}
+
+func NewFeatureHit(symbol string, counts, ratio, features, multiplier int) *Hit {
+	return &Hit{HitKey{symbol, counts}, ratio, features, multiplier}
+}
+
+func (nH Hit) key() HitKey {
+	return nH.HitKey
+}
+
+func makeHitMap(hits []*Hit) map[HitKey]*Hit {
+	m := make(map[HitKey]*Hit)
+	for _, v := range hits {
+		m[v.key()] = v
+	}
+	return m
+}
+
+func caclHitResult(win *Win, hits map[HitKey]*Hit) *HitResult {
+	if h, found := hits[win.key()]; found {
+		return &HitResult{win, h}
+	}
+	return nil
+}

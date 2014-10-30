@@ -2,8 +2,6 @@ package engine
 
 import (
 	"fmt"
-	"math/rand"
-	"time"
 )
 
 const (
@@ -75,35 +73,4 @@ func strings2Symbols(symbolsMap map[string]*Symbol, symbolNames []string) []*Sym
 		result[i] = symbolsMap[n]
 	}
 	return result
-}
-
-type Reel []*Symbol
-
-type spinEngine struct {
-	rows  int
-	reels []Reel
-}
-
-// spin the reels, randomly pick index for each reel, then from that symbol, get consecutive [rows] number of symbols
-func (self *spinEngine) spin() []Reel {
-	random := rand.New(rand.NewSource(time.Now().UnixNano()))
-	fOneReel := func(reel Reel) Reel {
-		length := len(reel)
-		ri := random.Intn(length)
-		r := make(Reel, self.rows)
-		for i := 0; i < self.rows; i++ {
-			r[i] = reel[(ri+i)%length]
-		}
-		return r
-	}
-	result := make([]Reel, len(self.reels))
-	for i, reel := range self.reels {
-		cs := fOneReel(reel)
-		result[i] = cs
-	}
-	return result
-}
-
-func createEngine(rows int, reels ...Reel) *spinEngine {
-	return &spinEngine{rows, reels}
 }

@@ -2,6 +2,8 @@ package engine
 
 import (
 	"fmt"
+	"math/rand"
+	"time"
 )
 
 type GameCore struct {
@@ -43,41 +45,33 @@ func (g *GameCore) spin() []Reel {
 	return createEngine(g.rows, g.reels...).spin()
 }
 
-type Hit struct {
-	HitKey
-	ratio      int
-	features   int
-	multiplier int
+type Reel []*Symbol
+
+type spinEngine struct {
+	rows  int
+	reels []Reel
 }
 
-type HitResult struct {
-	win *Win
-	hit *Hit
+func createEngine(rows int, reels ...Reel) *spinEngine {
+	return &spinEngine{rows, reels}
 }
 
-func NewHit(symbol string, counts int, ratio int) *Hit {
-	return &Hit{HitKey{symbol, counts}, ratio, 0, 0}
-}
-
-func NewFeatureHit(symbol string, counts, ratio, features, multiplier int) *Hit {
-	return &Hit{HitKey{symbol, counts}, ratio, features, multiplier}
-}
-
-func (nH Hit) key() HitKey {
-	return nH.HitKey
-}
-
-func makeHitMap(hits []*Hit) map[HitKey]*Hit {
-	m := make(map[HitKey]*Hit)
-	for _, v := range hits {
-		m[v.key()] = v
+// spin the reels, randomly pick index for each reel, then from that symbol, get consecutive [rows] number of symbols
+func (self *spinEngine) spin() []Reel {
+	random := rand.New(rand.NewSource(time.Now().UnixNano()))
+	fOneReel := func(reel Reel) Reel {
+		length := len(reel)
+		ri := random.Intn(length)
+		r := make(Reel, self.rows)
+		for i := 0; i < self.rows; i++ {
+			r[i] = reel[(ri+i)%length]
+		}
+		return r
 	}
-	return m
-}
-
-func caclHitResult(win *Win, hits map[HitKey]*Hit) *HitResult {
-	if h, found := hits[win.key()]; found {
-		return &HitResult{win, h}
+	result := make([]Reel, len(self.reels))
+	for i, reel := range self.reels {
+		cs := fOneReel(reel)
+		result[i] = cs
 	}
-	return nil
+	return result
 }
