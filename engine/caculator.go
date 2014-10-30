@@ -2,11 +2,6 @@ package engine
 
 import "fmt"
 
-type HitKey struct {
-	Symbol string
-	counts int
-}
-
 type Win struct {
 	Symbol     *Symbol
 	Counts     int
@@ -21,6 +16,15 @@ func (w Win) key() HitKey {
 	return HitKey{w.Symbol.name, w.Counts}
 }
 
+func NewNormalWin(sym *Symbol, counts int, wild bool) *Win {
+	return &Win{sym, counts, wild}
+}
+
+func NewOtherWin(sym *Symbol, counts int) *Win {
+	return &Win{sym, counts, false}
+}
+
+//deprecated, later romove this function
 func NewWin(sym *Symbol, counts int, wild bool) *Win {
 	return &Win{sym, counts, wild}
 }
@@ -53,7 +57,7 @@ func calcNormalWins(symbols SLine) *Win {
 	} else if first.isWild() {
 		return nil
 	} else {
-		return NewWin(first, c, wild)
+		return NewNormalWin(first, c, wild)
 	}
 }
 
@@ -74,7 +78,7 @@ func calcWildWins(symbols SLine) *Win {
 	if c < 2 {
 		return nil
 	} else {
-		return NewWin(first, c, false)
+		return NewOtherWin(first, c)
 	}
 }
 
@@ -104,7 +108,7 @@ func caclScatterWins(reels []Reel) *Win {
 	if c < 2 {
 		return nil
 	} else {
-		return NewWin(first, c, false)
+		return NewOtherWin(first, c)
 	}
 }
 

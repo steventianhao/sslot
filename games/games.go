@@ -39,10 +39,10 @@ func createUnderWater() *engine.SlotGame {
 	return g1
 }
 
-func Spin(game, mode string) ([]engine.Reel, error) {
+func Spin(game, mode string) (*engine.SpinResult, error) {
 	g, ok := AllGames[game]
 	if !ok {
 		return nil, fmt.Errorf("game [%s] not found", game)
 	}
-	return g.Spin(mode)
+	return g.SpinResult(mode)
 }

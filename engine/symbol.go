@@ -1,9 +1,5 @@
 package engine
 
-import (
-	"fmt"
-)
-
 const (
 	Normal  = 0
 	Scatter = 1
@@ -29,16 +25,7 @@ func Ws(id int, name string) *Symbol {
 }
 
 func (s Symbol) String() string {
-	var k string
-	switch s.kind {
-	default:
-		k = "Normal"
-	case 1:
-		k = "Scatter"
-	case 2:
-		k = "Wild"
-	}
-	return fmt.Sprint("id:", s.id, ",kind:", k, ",name:", s.name)
+	return s.name
 }
 
 func (s Symbol) isWild() bool {

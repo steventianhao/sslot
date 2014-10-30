@@ -70,6 +70,11 @@ func (g *SlotGame) AddHits(normalHits, wildHits, scatterHits []*Hit) {
 	g.scatterHits = makeHitMap(scatterHits)
 }
 
+type HitKey struct {
+	Symbol string
+	counts int
+}
+
 type Hit struct {
 	HitKey
 	ratio      int
@@ -80,6 +85,15 @@ type Hit struct {
 type HitResult struct {
 	win *Win
 	hit *Hit
+}
+
+// if there's subsitute in line, then ratio multiply 2
+func (hr HitResult) ratio() int {
+	ratio := hr.hit.ratio
+	if hr.win.Substitute {
+		return ratio * 2
+	}
+	return ratio
 }
 
 func NewHit(symbol string, counts int, ratio int) *Hit {
@@ -107,4 +121,71 @@ func caclHitResult(win *Win, hits map[HitKey]*Hit) *HitResult {
 		return &HitResult{win, h}
 	}
 	return nil
+}
+
+type ScatterWin struct {
+	Ratio, Features, Multiplier int
+}
+
+type LineWin struct {
+	LineId    int
+	Symbol    string
+	Counts    int
+	Subsitute bool
+	Ratio     int
+}
+
+func (lw LineWin) String() string {
+	return fmt.Sprint("{lineId:", lw.LineId+1, " symbol:", lw.Symbol, " counts:", lw.Counts, " substitute:", lw.Subsitute, " ratio:", lw.Ratio, "}")
+}
+
+type SpinResult struct {
+	reels      []Reel
+	lineWins   []*LineWin
+	scatterWin *ScatterWin
+}
+
+func (sr SpinResult) String() string {
+	return fmt.Sprint("reels:", sr.reels, "lineWins:", sr.lineWins, "scatterWin:", sr.scatterWin)
+}
+
+func (g SlotGame) SpinResult(mode string) (*SpinResult, error) {
+	reels, err := g.Spin(mode)
+	if err != nil {
+		return nil, err
+	}
+	slines := symbolOnLines(reels, g.lines)
+	var lineWins []*LineWin
+	for i, sl := range slines {
+		var nhr, whr *HitResult
+		if nw := calcNormalWins(sl); nw != nil {
+			nhr = caclHitResult(nw, g.normalHits)
+		}
+		if ww := calcWildWins(sl); ww != nil {
+			whr = caclHitResult(ww, g.wildHits)
+		}
+		if nhr == nil && whr == nil {
+			continue
+		}
+		var hr *HitResult
+		if nhr != nil && whr != nil {
+			if nhr.ratio() > whr.ratio() {
+				hr = nhr
+			} else {
+				hr = whr
+			}
+		} else if nhr != nil {
+			hr = nhr
+		} else {
+			hr = whr
+		}
+		lineWins = append(lineWins, &LineWin{i, hr.hit.Symbol, hr.hit.counts, hr.win.Substitute, hr.ratio()})
+	}
+	if sw := caclScatterWins(reels); sw != nil {
+		if shr := caclHitResult(sw, g.scatterHits); shr != nil {
+			r, f, m := shr.hit.ratio, shr.hit.features, shr.hit.multiplier
+			return &SpinResult{reels, lineWins, &ScatterWin{r, f, m}}, nil
+		}
+	}
+	return &SpinResult{reels, lineWins, nil}, nil
 }
