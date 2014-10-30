@@ -11,10 +11,6 @@ func (w Win) String() string {
 	return fmt.Sprint("symbol:", w.Key.Symbol, ",counts:", w.Key.Counts, ",substitude:", w.Substitute)
 }
 
-func (w Win) key() Key {
-	return w.Key
-}
-
 func NewNormalWin(sym string, counts int, wild bool) *Win {
 	return &Win{Key{sym, counts}, wild}
 }

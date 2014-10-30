@@ -75,21 +75,25 @@ type Key struct {
 	Counts int
 }
 
-type Hit struct {
-	Key
+type Reward struct {
 	ratio      int
 	features   int
 	multiplier int
 }
 
+type Hit struct {
+	Key
+	Reward
+}
+
 type HitResult struct {
-	win *Win
-	hit *Hit
+	win    *Win
+	reward *Reward
 }
 
 // if there's subsitute in line, then ratio multiply 2
 func (hr HitResult) ratio() int {
-	ratio := hr.hit.ratio
+	ratio := hr.reward.ratio
 	if hr.win.Substitute {
 		return ratio * 2
 	}
@@ -97,34 +101,26 @@ func (hr HitResult) ratio() int {
 }
 
 func NewHit(symbol string, counts int, ratio int) *Hit {
-	return &Hit{Key{symbol, counts}, ratio, 0, 0}
+	return &Hit{Key{symbol, counts}, Reward{ratio, 0, 0}}
 }
 
 func NewFeatureHit(symbol string, counts, ratio, features, multiplier int) *Hit {
-	return &Hit{Key{symbol, counts}, ratio, features, multiplier}
-}
-
-func (h Hit) key() Key {
-	return h.Key
+	return &Hit{Key{symbol, counts}, Reward{ratio, features, multiplier}}
 }
 
 func makeHitMap(hits []*Hit) map[Key]*Hit {
 	m := make(map[Key]*Hit)
 	for _, v := range hits {
-		m[v.key()] = v
+		m[v.Key] = v
 	}
 	return m
 }
 
 func caclHitResult(win *Win, hits map[Key]*Hit) *HitResult {
-	if h, found := hits[win.key()]; found {
-		return &HitResult{win, h}
+	if h, found := hits[win.Key]; found {
+		return &HitResult{win, &h.Reward}
 	}
 	return nil
-}
-
-type ScatterWin struct {
-	Ratio, Features, Multiplier int
 }
 
 type LineWin struct {
@@ -140,7 +136,7 @@ func (lw LineWin) String() string {
 type SpinResult struct {
 	reels      []Reel
 	lineWins   []*LineWin
-	scatterWin *ScatterWin
+	scatterWin *Reward
 }
 
 func (sr SpinResult) String() string {
@@ -181,8 +177,7 @@ func (g SlotGame) SpinResult(mode string) (*SpinResult, error) {
 	}
 	if sw := caclScatterWins(reels); sw != nil {
 		if shr := caclHitResult(sw, g.scatterHits); shr != nil {
-			r, f, m := shr.hit.ratio, shr.hit.features, shr.hit.multiplier
-			return &SpinResult{reels, lineWins, &ScatterWin{r, f, m}}, nil
+			return &SpinResult{reels, lineWins, shr.reward}, nil
 		}
 	}
 	return &SpinResult{reels, lineWins, nil}, nil
