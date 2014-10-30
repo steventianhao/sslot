@@ -3,29 +3,29 @@ package engine
 import "fmt"
 
 type Win struct {
-	HitKey
+	Key
 	Substitute bool
 }
 
 func (w Win) String() string {
-	return fmt.Sprint("symbol:", w.HitKey.Symbol, ",counts:", w.HitKey.counts, ",substitude:", w.Substitute)
+	return fmt.Sprint("symbol:", w.Key.Symbol, ",counts:", w.Key.Counts, ",substitude:", w.Substitute)
 }
 
-func (w Win) key() HitKey {
-	return w.HitKey
+func (w Win) key() Key {
+	return w.Key
 }
 
 func NewNormalWin(sym string, counts int, wild bool) *Win {
-	return &Win{HitKey{sym, counts}, wild}
+	return &Win{Key{sym, counts}, wild}
 }
 
 func NewOtherWin(sym string, counts int) *Win {
-	return &Win{HitKey{sym, counts}, false}
+	return &Win{Key{sym, counts}, false}
 }
 
 //deprecated, later romove this function
 func NewWin(sym string, counts int, wild bool) *Win {
-	return &Win{HitKey{sym, counts}, wild}
+	return &Win{Key{sym, counts}, wild}
 }
 
 // if less than 2, then ZERO chance to win

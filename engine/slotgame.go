@@ -12,9 +12,9 @@ type SlotGame struct {
 	nLines      int
 	gameCores   map[string]*GameCore
 	lines       []Line
-	normalHits  map[HitKey]*Hit
-	wildHits    map[HitKey]*Hit
-	scatterHits map[HitKey]*Hit
+	normalHits  map[Key]*Hit
+	wildHits    map[Key]*Hit
+	scatterHits map[Key]*Hit
 }
 
 func (g SlotGame) Name() string {
@@ -70,13 +70,13 @@ func (g *SlotGame) AddHits(normalHits, wildHits, scatterHits []*Hit) {
 	g.scatterHits = makeHitMap(scatterHits)
 }
 
-type HitKey struct {
+type Key struct {
 	Symbol string
-	counts int
+	Counts int
 }
 
 type Hit struct {
-	HitKey
+	Key
 	ratio      int
 	features   int
 	multiplier int
@@ -97,26 +97,26 @@ func (hr HitResult) ratio() int {
 }
 
 func NewHit(symbol string, counts int, ratio int) *Hit {
-	return &Hit{HitKey{symbol, counts}, ratio, 0, 0}
+	return &Hit{Key{symbol, counts}, ratio, 0, 0}
 }
 
 func NewFeatureHit(symbol string, counts, ratio, features, multiplier int) *Hit {
-	return &Hit{HitKey{symbol, counts}, ratio, features, multiplier}
+	return &Hit{Key{symbol, counts}, ratio, features, multiplier}
 }
 
-func (nH Hit) key() HitKey {
-	return nH.HitKey
+func (h Hit) key() Key {
+	return h.Key
 }
 
-func makeHitMap(hits []*Hit) map[HitKey]*Hit {
-	m := make(map[HitKey]*Hit)
+func makeHitMap(hits []*Hit) map[Key]*Hit {
+	m := make(map[Key]*Hit)
 	for _, v := range hits {
 		m[v.key()] = v
 	}
 	return m
 }
 
-func caclHitResult(win *Win, hits map[HitKey]*Hit) *HitResult {
+func caclHitResult(win *Win, hits map[Key]*Hit) *HitResult {
 	if h, found := hits[win.key()]; found {
 		return &HitResult{win, h}
 	}
