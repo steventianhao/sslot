@@ -2,6 +2,7 @@ package engine
 
 import (
 	"github.com/stretchr/testify/assert"
+	"runtime"
 	"testing"
 )
 
@@ -41,31 +42,55 @@ func TestGameBuilderFailure(t *testing.T) {
 	assert.Error(t, err, "create game core should succeed")
 }
 
+type TestSpinResult struct {
+	nStarfish, nOctupus, nShark int
+}
+
 func TestSpin1x1(t *testing.T) {
+	runtime.GOMAXPROCS(runtime.NumCPU() * 2)
 	starfish := Ns(7, "Starfish")
 	octopus := Ns(10, "Octopus")
 	shark := Ws(12, "Shark")
+
 	engine := createEngine(1, Reel{starfish, octopus, shark})
 
-	var nStarfish, nOctupus, nShark int
-	for i := 0; i < 100000; i++ {
-		result := engine.spin()
-		assert.Len(t, result, 1)
-		assert.Len(t, result[0], 1)
-		r := result[0][0]
-		if r == starfish {
-			nStarfish++
-		} else if r == octopus {
-			nOctupus++
-		} else {
-			nShark++
-		}
-		assert.True(t, r == starfish || r == octopus || r == shark)
+	workers := 1000
+	jobs := 1000
+
+	rchan := make(chan *TestSpinResult, workers)
+	for i := 0; i < workers; i++ {
+		go func() {
+			var nStarfish, nOctupus, nShark int
+			for j := 0; j < jobs; j++ {
+				result := engine.spin()
+				assert.Len(t, result, 1)
+				assert.Len(t, result[0], 1)
+				r := result[0][0]
+				assert.True(t, r == starfish || r == octopus || r == shark)
+				if r == starfish {
+					nStarfish++
+				} else if r == octopus {
+					nOctupus++
+				} else {
+					nShark++
+				}
+			}
+			rchan <- &TestSpinResult{nStarfish, nOctupus, nShark}
+		}()
 	}
-	assert.True(t, nStarfish > 33000)
-	assert.True(t, nOctupus > 33000)
-	assert.True(t, nShark > 33000)
-	assert.True(t, nShark+nStarfish+nOctupus == 100000)
+
+	var nStarfish, nOctupus, nShark int
+	for i := 0; i < workers; i++ {
+		tsr := <-rchan
+		nStarfish += tsr.nStarfish
+		nOctupus += tsr.nOctupus
+		nShark += tsr.nShark
+	}
+	close(rchan)
+	assert.True(t, nStarfish > 330000)
+	assert.True(t, nOctupus > 330000)
+	assert.True(t, nShark > 330000)
+	assert.True(t, nShark+nStarfish+nOctupus == jobs*workers)
 }
 
 func TestSpin2x1(t *testing.T) {
