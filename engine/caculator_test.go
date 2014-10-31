@@ -65,6 +65,24 @@ func TestCalcNormalWins(t *testing.T) {
 	assert.Equal(t, w1, NewWin("Nine", 2, true))
 }
 
+func TestCalcNormalWins2(t *testing.T) {
+	slines := [][]string{
+		[]string{"Shark", "Nine", "Nine", "Nine", "Nine"},
+		[]string{"Nine", "Nine", "Shark", "Nine", "Nine"},
+		[]string{"Nine", "Nine", "Nine", "Nine", "Shark"},
+
+		[]string{"Shark", "Shark", "Shark", "Nine", "Shark"},
+		[]string{"Shark", "Shark", "Shark", "Shark", "Nine"},
+		[]string{"Nine", "Shark", "Shark", "Shark", "Shark"},
+	}
+
+	for _, sline := range slines {
+		ss := strings2Symbols(testSymbolsMap, sline)
+		w1 := calcNormalWins(ss)
+		assert.Equal(t, w1, NewWin("Nine", 5, true))
+	}
+}
+
 func TestCalcScatter3(t *testing.T) {
 	matrix := []Reel{
 		Reel{Ns(5, "Ace"), Ns(6, "Clam"), Ns(7, "Starfish")},
