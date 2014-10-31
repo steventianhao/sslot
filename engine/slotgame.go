@@ -86,20 +86,6 @@ type Hit struct {
 	Reward
 }
 
-type HitResult struct {
-	win    *Win
-	reward *Reward
-}
-
-// if there's subsitute in line, then ratio multiply 2
-func (hr HitResult) ratio() int {
-	ratio := hr.reward.Ratio
-	if hr.win.Substitute {
-		return ratio * 2
-	}
-	return ratio
-}
-
 func NewHit(symbol string, counts int, ratio int) *Hit {
 	return &Hit{Key{symbol, counts}, Reward{ratio, 0, 0}}
 }
@@ -114,6 +100,20 @@ func makeHitMap(hits []*Hit) map[Key]*Hit {
 		m[v.Key] = v
 	}
 	return m
+}
+
+type HitResult struct {
+	win    *Win
+	reward *Reward
+}
+
+// if there's subsitute in line, then ratio multiply 2
+func (hr HitResult) ratio() int {
+	ratio := hr.reward.Ratio
+	if hr.win.Substitute {
+		return ratio * 2
+	}
+	return ratio
 }
 
 func caclHitResult(win *Win, hits map[Key]*Hit) *HitResult {
@@ -141,6 +141,23 @@ type SpinResult struct {
 
 func (sr SpinResult) String() string {
 	return fmt.Sprint("reels:", sr.Reels, "lineWins:", sr.LineWins, "scatterWin:", sr.ScatterWin)
+}
+
+type SLine []*Symbol
+
+func symbolOnLines(reels []Reel, lines []Line) []SLine {
+	oneLine := func(line Line) SLine {
+		r := make(SLine, len(line))
+		for i, idx := range line {
+			r[i] = reels[i][idx]
+		}
+		return r
+	}
+	r := make([]SLine, len(lines))
+	for i, line := range lines {
+		r[i] = oneLine(line)
+	}
+	return r
 }
 
 func (g SlotGame) SpinResult(mode string) (*SpinResult, error) {

@@ -106,20 +106,3 @@ func caclScatterWins(reels []Reel) *Win {
 		return NewOtherWin(first.Name, c)
 	}
 }
-
-type SLine []*Symbol
-
-func symbolOnLines(reels []Reel, lines []Line) []SLine {
-	oneLine := func(line Line) SLine {
-		r := make(SLine, len(line))
-		for i, idx := range line {
-			r[i] = reels[i][idx]
-		}
-		return r
-	}
-	r := make([]SLine, len(lines))
-	for i, line := range lines {
-		r[i] = oneLine(line)
-	}
-	return r
-}

@@ -49,6 +49,21 @@ func TestCalcNormalWins(t *testing.T) {
 	w1 = calcNormalWins(ss)
 	assert.Nil(t, w1)
 
+	sstr = []string{"Shark", "Shark", "Shark", "Shark", "Shark"}
+	ss = strings2Symbols(testSymbolsMap, sstr)
+	w1 = calcNormalWins(ss)
+	assert.Nil(t, w1)
+
+	sstr = []string{"Shark", "Mermaid", "Mermaid", "Mermaid", "Shark"}
+	ss = strings2Symbols(testSymbolsMap, sstr)
+	w1 = calcNormalWins(ss)
+	assert.Nil(t, w1)
+
+	sstr = []string{"Shark", "Shark", "Mermaid", "Mermaid", "Shark"}
+	ss = strings2Symbols(testSymbolsMap, sstr)
+	w1 = calcNormalWins(ss)
+	assert.Nil(t, w1)
+
 	sstr = []string{"Nine", "Nine", "Mermaid", "Nine", "Nine"}
 	ss = strings2Symbols(testSymbolsMap, sstr)
 	w1 = calcNormalWins(ss)
