@@ -54,7 +54,7 @@ func TestSpin1x1(t *testing.T) {
 
 	engine := createEngine(1, Reel{starfish, octopus, shark})
 
-	workers := 1000
+	workers := 100
 	jobs := 1000
 
 	rchan := make(chan *TestSpinResult, workers)
@@ -87,9 +87,9 @@ func TestSpin1x1(t *testing.T) {
 		nShark += tsr.nShark
 	}
 	close(rchan)
-	assert.True(t, nStarfish > 330000)
-	assert.True(t, nOctupus > 330000)
-	assert.True(t, nShark > 330000)
+	assert.True(t, nStarfish > 33000)
+	assert.True(t, nOctupus > 33000)
+	assert.True(t, nShark > 33000)
 	assert.True(t, nShark+nStarfish+nOctupus == jobs*workers)
 }
 
