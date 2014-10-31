@@ -84,19 +84,53 @@ func TestCalcNormalWins2(t *testing.T) {
 }
 
 func TestCalcScatter3(t *testing.T) {
+	ss := Ss(11, "Mermaid")
+
 	matrix := []Reel{
 		Reel{Ns(5, "Ace"), Ns(6, "Clam"), Ns(7, "Starfish")},
-		Reel{Ns(0, "Nine"), Ns(1, "Ten"), Ss(11, "Mermaid")},
-		Reel{Ns(3, "Queen"), Ss(11, "Mermaid"), Ns(4, "King")},
+		Reel{Ns(0, "Nine"), Ns(1, "Ten"), ss},
+		Reel{Ns(3, "Queen"), ss, Ns(4, "King")},
 	}
 	w := caclScatterWins(matrix)
 	assert.Nil(t, w)
 
 	matrix = []Reel{
 		Reel{Ns(5, "Ace"), Ns(6, "Clam"), Ns(7, "Starfish")},
-		Reel{Ss(11, "Mermaid"), Ns(0, "Nine"), Ns(1, "Ten")},
-		Reel{Ss(11, "Mermaid"), Ns(3, "Queen"), Ns(4, "King")},
+		Reel{Ns(5, "Ace"), Ns(0, "Nine"), Ns(1, "Ten")},
+		Reel{ss, Ns(3, "Queen"), Ns(4, "King")},
 	}
 	w = caclScatterWins(matrix)
 	assert.Nil(t, w)
+
+	matrix = []Reel{
+		Reel{ss, Ns(3, "Queen"), Ns(4, "King")},
+		Reel{Ns(5, "Ace"), Ns(6, "Clam"), Ns(7, "Starfish")},
+		Reel{Ns(5, "Ace"), Ns(0, "Nine"), Ns(1, "Ten")},
+	}
+	w = caclScatterWins(matrix)
+	assert.Nil(t, w)
+
+	matrix = []Reel{
+		Reel{Ns(5, "Ace"), Ns(6, "Clam"), Ns(7, "Starfish")},
+		Reel{ss, Ns(0, "Nine"), Ns(1, "Ten")},
+		Reel{ss, Ns(3, "Queen"), Ns(4, "King")},
+	}
+	w = caclScatterWins(matrix)
+	assert.Nil(t, w)
+
+	matrix = []Reel{
+		Reel{Ns(5, "Ace"), Ns(6, "Clam"), ss},
+		Reel{ss, Ns(0, "Nine"), Ns(1, "Ten")},
+		Reel{ss, Ns(3, "Queen"), Ns(4, "King")},
+	}
+	w = caclScatterWins(matrix)
+	assert.Equal(t, w, NewWin("Mermaid", 3, false))
+
+	matrix = []Reel{
+		Reel{Ns(5, "Ace"), Ns(6, "Clam"), ss},
+		Reel{ss, Ns(0, "Nine"), Ns(1, "Ten")},
+		Reel{Ns(5, "Ace"), Ns(3, "Queen"), Ns(4, "King")},
+	}
+	w = caclScatterWins(matrix)
+	assert.Equal(t, w, NewWin("Mermaid", 2, false))
 }
