@@ -54,6 +54,8 @@ func checkSymbolNames(symbolsMap map[string]*Symbol, symbolNames []string) bool 
 	return true
 }
 
+//if two symbols with same name, return two symbols back
+//if not exist, then nil will be in the result slice
 func strings2Symbols(symbolsMap map[string]*Symbol, symbolNames []string) []*Symbol {
 	result := make([]*Symbol, len(symbolNames))
 	for i, n := range symbolNames {
