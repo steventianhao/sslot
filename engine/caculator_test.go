@@ -81,3 +81,21 @@ func TestCalcNormalWins(t *testing.T) {
 	fmt.Println("TestCalcNormalWins", w1)
 	expect(t, w1, NewWin("Nine", 2, true))
 }
+
+func TestCalcScatter3(t *testing.T) {
+	matrix := []Reel{
+		Reel{Ns(5, "Ace"), Ns(6, "Clam"), Ns(7, "Starfish")},
+		Reel{Ns(0, "Nine"), Ns(1, "Ten"), Ss(11, "Mermaid")},
+		Reel{Ns(3, "Queen"), Ss(11, "Mermaid"), Ns(4, "King")},
+	}
+	w := caclScatterWins(matrix)
+	expect(t, w, nil)
+
+	matrix = []Reel{
+		Reel{Ns(5, "Ace"), Ns(6, "Clam"), Ns(7, "Starfish")},
+		Reel{Ss(11, "Mermaid"), Ns(0, "Nine"), Ns(1, "Ten")},
+		Reel{Ss(11, "Mermaid"), Ns(3, "Queen"), Ns(4, "King")},
+	}
+	w = caclScatterWins(matrix)
+	expect(t, w, nil)
+}
