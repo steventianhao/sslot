@@ -65,6 +65,39 @@ func TestCalcNormalWins(t *testing.T) {
 	assert.Equal(t, w1, NewWin("Nine", 2, true))
 }
 
+func TestCalcWildWins(t *testing.T) {
+
+	sstr := []string{"Shark", "Nine", "Mermaid", "Nine", "Nine"}
+	ss := strings2Symbols(testSymbolsMap, sstr)
+	w1 := calcWildWins(ss)
+	assert.Nil(t, w1)
+
+	sstr = []string{"Nine", "Shark", "Shark", "Shark", "Shark"}
+	ss = strings2Symbols(testSymbolsMap, sstr)
+	w1 = calcWildWins(ss)
+	assert.Nil(t, w1)
+
+	sstr = []string{"Shark", "Shark", "Mermaid", "Nine", "Nine"}
+	ss = strings2Symbols(testSymbolsMap, sstr)
+	w1 = calcWildWins(ss)
+	assert.Equal(t, w1, NewWin("Shark", 2, false))
+
+	sstr = []string{"Shark", "Shark", "Shark", "Nine", "Nine"}
+	ss = strings2Symbols(testSymbolsMap, sstr)
+	w1 = calcWildWins(ss)
+	assert.Equal(t, w1, NewWin("Shark", 3, false))
+
+	sstr = []string{"Shark", "Shark", "Shark", "Shark", "Nine"}
+	ss = strings2Symbols(testSymbolsMap, sstr)
+	w1 = calcWildWins(ss)
+	assert.Equal(t, w1, NewWin("Shark", 4, false))
+
+	sstr = []string{"Shark", "Shark", "Shark", "Shark", "Shark"}
+	ss = strings2Symbols(testSymbolsMap, sstr)
+	w1 = calcWildWins(ss)
+	assert.Equal(t, w1, NewWin("Shark", 5, false))
+}
+
 func TestCalcNormalWins2(t *testing.T) {
 	slines := [][]string{
 		[]string{"Shark", "Nine", "Nine", "Nine", "Nine"},
