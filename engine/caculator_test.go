@@ -1,7 +1,7 @@
 package engine
 
 import (
-	"fmt"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
@@ -23,63 +23,46 @@ var testSymbols = []*Symbol{
 
 var testSymbolsMap = symbols2Map(testSymbols)
 
-func expect(t *testing.T, a *Win, b *Win) {
-	if b != nil && a != nil {
-		if *a != *b {
-			es := fmt.Sprint("[", *a, "] should equal to [", *b, "]")
-			t.Error(es)
-		}
-	} else if b == nil && a == nil {
-		return
-	} else {
-		es := fmt.Sprint("[", a, "] should equal to [", b, "]")
-		t.Error(es)
-	}
-}
-
 func TestCalcNormalWins(t *testing.T) {
 	sstr := []string{"Nine", "Ten", "Jack", "Queen", "King"}
 	ss := strings2Symbols(testSymbolsMap, sstr)
 	w1 := calcNormalWins(ss)
-	expect(t, w1, nil)
+	assert.Nil(t, w1)
 
 	sstr = []string{"Mermaid", "Nine", "Nine", "Nine", "Nine"}
 	ss = strings2Symbols(testSymbolsMap, sstr)
 	w1 = calcNormalWins(ss)
-	expect(t, w1, nil)
+	assert.Nil(t, w1)
 
 	sstr = []string{"Mermaid", "Mermaid", "Nine", "Nine", "Nine"}
 	ss = strings2Symbols(testSymbolsMap, sstr)
 	w1 = calcNormalWins(ss)
-	expect(t, w1, nil)
+	assert.Nil(t, w1)
 
 	sstr = []string{"Shark", "Mermaid", "Nine", "Nine", "Nine"}
 	ss = strings2Symbols(testSymbolsMap, sstr)
 	w1 = calcNormalWins(ss)
-	expect(t, w1, nil)
+	assert.Nil(t, w1)
 
 	sstr = []string{"Mermaid", "Shark", "Nine", "Nine", "Nine"}
 	ss = strings2Symbols(testSymbolsMap, sstr)
 	w1 = calcNormalWins(ss)
-	expect(t, w1, nil)
+	assert.Nil(t, w1)
 
 	sstr = []string{"Nine", "Nine", "Mermaid", "Nine", "Nine"}
 	ss = strings2Symbols(testSymbolsMap, sstr)
 	w1 = calcNormalWins(ss)
-	fmt.Println("TestCalcNormalWins", w1)
-	expect(t, w1, NewWin("Nine", 2, false))
+	assert.Equal(t, w1, NewWin("Nine", 2, false))
 
 	sstr = []string{"Nine", "Shark", "Mermaid", "Nine", "Nine"}
 	ss = strings2Symbols(testSymbolsMap, sstr)
 	w1 = calcNormalWins(ss)
-	fmt.Println("TestCalcNormalWins", w1)
-	expect(t, w1, NewWin("Nine", 2, true))
+	assert.Equal(t, w1, NewWin("Nine", 2, true))
 
 	sstr = []string{"Shark", "Nine", "Mermaid", "Nine", "Nine"}
 	ss = strings2Symbols(testSymbolsMap, sstr)
 	w1 = calcNormalWins(ss)
-	fmt.Println("TestCalcNormalWins", w1)
-	expect(t, w1, NewWin("Nine", 2, true))
+	assert.Equal(t, w1, NewWin("Nine", 2, true))
 }
 
 func TestCalcScatter3(t *testing.T) {
@@ -89,7 +72,7 @@ func TestCalcScatter3(t *testing.T) {
 		Reel{Ns(3, "Queen"), Ss(11, "Mermaid"), Ns(4, "King")},
 	}
 	w := caclScatterWins(matrix)
-	expect(t, w, nil)
+	assert.Nil(t, w)
 
 	matrix = []Reel{
 		Reel{Ns(5, "Ace"), Ns(6, "Clam"), Ns(7, "Starfish")},
@@ -97,5 +80,5 @@ func TestCalcScatter3(t *testing.T) {
 		Reel{Ss(11, "Mermaid"), Ns(3, "Queen"), Ns(4, "King")},
 	}
 	w = caclScatterWins(matrix)
-	expect(t, w, nil)
+	assert.Nil(t, w)
 }

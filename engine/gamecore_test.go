@@ -48,7 +48,7 @@ func TestSpin1x1(t *testing.T) {
 	engine := createEngine(1, Reel{starfish, octopus, shark})
 
 	var nStarfish, nOctupus, nShark int
-	for i := 0; i < 10000; i++ {
+	for i := 0; i < 100000; i++ {
 		result := engine.spin()
 		assert.Len(t, result, 1)
 		assert.Len(t, result[0], 1)
@@ -62,10 +62,10 @@ func TestSpin1x1(t *testing.T) {
 		}
 		assert.True(t, r == starfish || r == octopus || r == shark)
 	}
-	assert.True(t, nStarfish > 3250)
-	assert.True(t, nOctupus > 3250)
-	assert.True(t, nShark > 3250)
-	assert.True(t, nShark+nStarfish+nOctupus == 10000)
+	assert.True(t, nStarfish > 33000)
+	assert.True(t, nOctupus > 33000)
+	assert.True(t, nShark > 33000)
+	assert.True(t, nShark+nStarfish+nOctupus == 100000)
 }
 
 func TestSpin2x1(t *testing.T) {
