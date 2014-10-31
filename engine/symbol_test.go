@@ -14,7 +14,7 @@ func TestSymbolsEqual(t *testing.T) {
 func TestSymbolsNotEqual(t *testing.T) {
 	s1 := Symbol{Id: 0, Name: "s1", kind: Normal}
 	s2 := Symbol{Id: 0, Name: "s2", kind: Normal}
-	assert.NotEqual(t, s1, s2, "two symbols should be the same")
+	assert.NotEqual(t, s1, s2, "two symbols should not be the same")
 }
 
 func TestWsNsSs(t *testing.T) {
