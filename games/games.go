@@ -46,3 +46,8 @@ func Spin(game, mode string) (*engine.SpinResult, error) {
 	}
 	return g.SpinResult(mode)
 }
+
+func ShowGame(name string) bool {
+	_, ok := AllGames[name]
+	return ok
+}
