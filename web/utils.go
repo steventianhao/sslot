@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/fzzy/radix/redis"
 	"github.com/gorilla/securecookie"
 	"hash/fnv"
 	"net/http"
@@ -33,6 +34,10 @@ func Hash(s string) uint64 {
 	h := fnv.New64a()
 	h.Write([]byte(s))
 	return h.Sum64()
+}
+
+func isNil(r *redis.Reply) bool {
+	return r.Type == redis.NilReply
 }
 
 func RedisHashKey(prefix, value string) string {
