@@ -6,19 +6,40 @@ import (
 	"errors"
 	"fmt"
 	"github.com/fzzy/radix/redis"
+	"github.com/gorilla/context"
 	"github.com/gorilla/securecookie"
 	"hash/fnv"
 	"net/http"
 )
 
 const (
-	REDIS_HASH_MAX = 1000
-	SESSION_ID     = "SID"
+	REDIS_HASH_MAX  = 1000
+	SESSION_ID      = "SID"
+	CTX_SESSION_KEY = 0
 )
 
+type SetSessionIfMissing struct {
+	http.Handler
+}
+
+func (f *SetSessionIfMissing) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	if c, err := r.Cookie(SESSION_ID); err != nil {
+		if sid, err := RandomString(); err == nil {
+			cookie := &http.Cookie{Name: SESSION_ID, Value: sid, Path: "/"}
+			http.SetCookie(w, cookie)
+			context.Set(r, CTX_SESSION_KEY, sid)
+			f.Handler.ServeHTTP(w, r)
+		} else {
+			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		}
+	} else {
+		context.Set(r, CTX_SESSION_KEY, c.Value)
+		f.Handler.ServeHTTP(w, r)
+	}
+}
+
 func AuthHash(r *http.Request) (string, string) {
-	sess, _ := r.Cookie(SESSION_ID)
-	sid := sess.Value
+	sid := context.Get(r, CTX_SESSION_KEY).(string)
 	return sid, RedisHashKey("auths", sid)
 }
 
