@@ -7,6 +7,7 @@
   "dependencies": {
     "phaser-official": "latest",
     "underscore": "~1.7.0",
-    "jquery": "~2.1.1"
+    "jquery": "~2.1.1",
+    "rxjs": "~2.3.14"
   }
 }

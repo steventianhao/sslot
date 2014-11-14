@@ -64,15 +64,17 @@
   }
 
   function spinPressed(){
-    // this.spinning=!this.spinning;
-    // if(this.spinning){
-    //   this.bSpinButton.setFrames("stop01.png","stop02.png","stop03.png");
-    // }else{
-    //   this.bSpinButton.setFrames("spin01.png","spin02.png","spin03.png");
-    // }
-    jQuery.getJSON('http://localhost:5555/game/underwater/spin/3/4').done(function(data){
-      console.log(data);
-    });
+    this.spinning=true;    
+    if(this.spinning){
+      var that =this;
+      var p=jQuery.getJSON('http://localhost:5555/game/underwater/spin/3/4');
+      var observable=Rx.Observable.fromPromise(p);
+      observable.delay(10000).subscribe(function(data){
+        console.log("in rxjs");
+        console.log(data);
+        that.spinning=false;
+      });
+    }
   }
 
   Game.prototype = {
@@ -111,7 +113,6 @@
 
     update: function () {
       if(this.spinning){
-
         if(this.vreel.hits.y>boxHeight){
           this.vreel.hits.y -= this.vreel.total*height;
         }
@@ -121,9 +122,7 @@
         this.vreel.hits.y+=15;
         this.vreel.pads.y+=15;
       }
-
     }
-
   };
 
   window['underwater'] = window['underwater'] || {};
