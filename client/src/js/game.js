@@ -4,8 +4,6 @@
   var reelsleft=139;
   var reelstop=110;
 
-
-
   var boxWidth=736;
   var boxHeight=409;
 
@@ -31,24 +29,27 @@
     this.symbols=['symbol_Nine','symbol_Ace','symbol_Nemo','symbol_Mermaid','symbol_Ten','symbol_Starfish','symbol_King','symbol_Queen','symbol_Clam','symbol_Jack','symbol_Shark','symbol_Green','symbol_Octopus']
   }
 
-  function Reel(hits,pads){
-    this.hits = hits;
-    this.pads = pads;
-    this.total = hits.length+pads.length;
+  function Reel(symbols){
+    this.symbols = symbols;
   }
 
-  function VReel(reel,game){
-    var g=game.add.group();
-    var g1=game.add.group();
-    _.each(reel.pads,function(e,i,l){g1.create(0,height*i,e);});
-    g.add(g1);
+  function VReel(reel,game,x,y,mask){
+    this.reel=game.add.group();
+    this.firstHalf=game.add.group();
 
-    var g0=game.add.group();
-    _.each(reel.hits,function(e,i,l){g0.create(0,height*i,e);});
-    g.add(g0);
-    g0.y= g0.y-height*(reel.hits.length);
+    _.each(reel.symbols,function(e,i,l){this.firstHalf.create(0,height*i,e);},this);
+    this.reel.add(this.firstHalf);
+
+    this.secondHalf=game.add.group();
+    _.each(reel.symbols,function(e,i,l){this.secondHalf.create(0,height*i,e);},this);
+    this.reel.add(this.secondHalf);
     
-    return {reel:g,hits:g0,pads:g1,total:reel.total};
+    this.firstHalf.y= -height*(reel.symbols.length);
+
+    this.reel.x=x;
+    this.reel.y=y;
+    this.reel.mask=mask;
+    this.total=reel.symbols.length*2;
   }
 
 
@@ -67,12 +68,17 @@
     this.spinning=true;    
     if(this.spinning){
       var that =this;
-      var p=jQuery.getJSON('http://localhost:5555/game/underwater/spin/3/4');
+      var p=jQuery.getJSON('/game/underwater/spin/3/4');
       var observable=Rx.Observable.fromPromise(p);
       observable.delay(10000).subscribe(function(data){
         console.log("in rxjs");
         console.log(data);
+        var symbols=['symbol_Nine','symbol_Ten','symbol_Jack'];
+        //
         that.spinning=false;
+        that.vreel.destroy();
+        
+
       });
     }
   }
@@ -97,30 +103,21 @@
       this.bSpinButton=this.add.button(745,583,"spin", spinPressed, this, "spin01.png","spin02.png","spin03.png");
       
       
-      var reel=new Reel(['symbol_Ace','symbol_King','symbol_Queen'],['symbol_Nine','symbol_Ace','symbol_Nemo','symbol_Nemo','symbol_Nemo']);
-      this.vreel=new VReel(reel,this);
-      var g=this.vreel.reel;
-
-      g.x=reelsleft;
-      g.y=reelstop;
-
-      
-    
-      
-      g.mask=mask;
+      var reel=new Reel(['symbol_Nine','symbol_Ace','symbol_Nemo','symbol_King','symbol_Nemo']);
+      this.vreel=new VReel(reel,this,reelsleft,reelstop,mask);  
       
     },
 
     update: function () {
       if(this.spinning){
-        if(this.vreel.hits.y>boxHeight){
-          this.vreel.hits.y -= this.vreel.total*height;
+        if(this.vreel.firstHalf.y>boxHeight){
+          this.vreel.firstHalf.y -= this.vreel.total*height;
         }
-        if(this.vreel.pads.y>boxHeight){
-          this.vreel.pads.y -= this.vreel.total*height;
+        if(this.vreel.secondHalf.y>boxHeight){
+          this.vreel.secondHalf.y -= this.vreel.total*height;
         }
-        this.vreel.hits.y+=15;
-        this.vreel.pads.y+=15;
+        this.vreel.firstHalf.y+=15;
+        this.vreel.secondHalf.y+=15;
       }
     }
   };
