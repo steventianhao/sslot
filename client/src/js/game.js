@@ -31,8 +31,8 @@
 
   function VReel(symbols,game,x,y,mask){
     this.reel=game.add.group();
-    this.firstHalf=game.add.group();
 
+    this.firstHalf=game.add.group();
     _.each(symbols,function(e,i,l){this.firstHalf.create(0,height*i,e);},this);
     this.reel.add(this.firstHalf);
 
@@ -46,6 +46,16 @@
     this.reel.y=y;
     this.reel.mask=mask;
     this.total=symbols.length*2;
+  }
+
+  VReel.prototype.changeSymbols=function(newSymbols){
+    this.firstHalf.removeAll(true,true);
+    this.secondHalf.removeAll(true,true);
+    _.each(newSymbols,function(e,i,l){this.firstHalf.create(0,height*i,e);},this);
+    _.each(newSymbols,function(e,i,l){this.secondHalf.create(0,height*i,e);},this);
+    this.secondHalf.y = 0;
+    this.firstHalf.y= -height*newSymbols.length;
+    this.total=newSymbols.length*2;
   }
 
 
@@ -66,15 +76,13 @@
       var that =this;
       var p=jQuery.getJSON('/game/underwater/spin/3/4');
       var observable=Rx.Observable.fromPromise(p);
-      observable.delay(10000).subscribe(function(data){
+      observable.delay(3000).subscribe(function(data){
         console.log("in rxjs");
         console.log(data);
         var symbols=['symbol_Nine','symbol_Ten','symbol_Jack'];
         //
         that.spinning=false;
-        that.vreel.destroy();
-        
-
+        that.vreel.changeSymbols(symbols);
       });
     }
   }
