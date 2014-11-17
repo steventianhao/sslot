@@ -29,27 +29,23 @@
     this.symbols=['symbol_Nine','symbol_Ace','symbol_Nemo','symbol_Mermaid','symbol_Ten','symbol_Starfish','symbol_King','symbol_Queen','symbol_Clam','symbol_Jack','symbol_Shark','symbol_Green','symbol_Octopus']
   }
 
-  function Reel(symbols){
-    this.symbols = symbols;
-  }
-
-  function VReel(reel,game,x,y,mask){
+  function VReel(symbols,game,x,y,mask){
     this.reel=game.add.group();
     this.firstHalf=game.add.group();
 
-    _.each(reel.symbols,function(e,i,l){this.firstHalf.create(0,height*i,e);},this);
+    _.each(symbols,function(e,i,l){this.firstHalf.create(0,height*i,e);},this);
     this.reel.add(this.firstHalf);
 
     this.secondHalf=game.add.group();
-    _.each(reel.symbols,function(e,i,l){this.secondHalf.create(0,height*i,e);},this);
+    _.each(symbols,function(e,i,l){this.secondHalf.create(0,height*i,e);},this);
     this.reel.add(this.secondHalf);
     
-    this.firstHalf.y= -height*(reel.symbols.length);
+    this.firstHalf.y= -height*symbols.length;
 
     this.reel.x=x;
     this.reel.y=y;
     this.reel.mask=mask;
-    this.total=reel.symbols.length*2;
+    this.total=symbols.length*2;
   }
 
 
@@ -103,8 +99,8 @@
       this.bSpinButton=this.add.button(745,583,"spin", spinPressed, this, "spin01.png","spin02.png","spin03.png");
       
       
-      var reel=new Reel(['symbol_Nine','symbol_Ace','symbol_Nemo','symbol_King','symbol_Nemo']);
-      this.vreel=new VReel(reel,this,reelsleft,reelstop,mask);  
+      var reel0=['symbol_Nine','symbol_Ace','symbol_Nemo','symbol_King','symbol_Nemo'];
+      this.vreel=new VReel(reel0,this,reelsleft,reelstop,mask);  
       
     },
 
