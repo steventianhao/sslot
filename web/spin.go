@@ -1,6 +1,7 @@
 package web
 
 import (
+	"errors"
 	"fmt"
 	"github.com/fzzy/radix/redis"
 	"github.com/gorilla/mux"
@@ -106,31 +107,56 @@ func FreeSpinGame(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if result, err := games.PlayerFreeSpin(gamename, username); err != nil {
+	result, err := games.PlayerFreeSpin(gamename, username)
+	if err != nil {
 		log.Println("player free spin error:", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
-	} else {
-		writeJson(w, r, result)
 	}
+	writeJson(w, r, result)
+}
+
+type SpinParams struct {
+	game  string
+	lines int
+	bet   *decimal.Decimal
+}
+
+func validateRequest(r *http.Request) (*SpinParams, error) {
+	vars := mux.Vars(r)
+	game, ok := vars["game"]
+	if !ok {
+		return nil, errors.New("Param game required")
+	}
+	sLines, ok := vars["lines"]
+	if !ok {
+		return nil, errors.New("Param lines required")
+	}
+	lines, err := strconv.Atoi(sLines)
+	if err != nil {
+		return nil, errors.New("Param lines is not number")
+	}
+	sBet, ok := vars["bet"]
+	if !ok {
+		return nil, errors.New("Param bet required")
+	}
+	bet, err := decimal.Parse(sBet)
+	if err != nil {
+		return nil, errors.New("Param bet is not decimal")
+	}
+	return &SpinParams{game, lines, bet}, nil
 }
 
 func NormalSpinGame(w http.ResponseWriter, r *http.Request) {
 	//if game name given not right, return directly
+	sp, err := validateRequest(r)
+	if err != nil {
+		http.NotFound(w, r)
+		return
+	}
+	gamename, newlines, newbet := sp.game, sp.lines, sp.bet
 
-	vars := mux.Vars(r)
-	gamename := vars["game"]
 	if !games.ShowGame(gamename) {
-		http.NotFound(w, r)
-		return
-	}
-	newlines, err := strconv.Atoi(vars["lines"])
-	if err != nil {
-		http.NotFound(w, r)
-		return
-	}
-	newbet, err := decimal.Parse(vars["bet"])
-	if err != nil {
 		http.NotFound(w, r)
 		return
 	}
